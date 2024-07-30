@@ -1,14 +1,12 @@
-import LandingPage  from './LandingPage/LandingPage';
-import './App.css'
-import { Route, Routes } from 'react-router-dom'
+import React from 'react'
+import LandingPage from './LandingPage.jsx';
 
 function App() {
- 
   return (
     <div>
       <LandingPage/>
     </div>
-  )
+  );
 }
 
-export default App
+export default App;
