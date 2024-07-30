@@ -9,7 +9,7 @@ const HeroSection = () => {
   return (
     
     <div className="hero-section">
-    <h1>WELCOME TO AUDIT!</h1>
+    <h1>WELLCOME TO AUDIT!</h1>
     <div className="hero-images">
       <img src={q} alt="" />
       <img src={w} alt="" />
