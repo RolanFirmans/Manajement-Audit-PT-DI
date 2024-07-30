@@ -17,7 +17,7 @@ const Navbar = () => {
               <a href="../About">ABOUT US</a>
             </li>
             <li>
-              <a href="">ABOUT AUDIT ROLES</a>
+              <a href="/AboutRoles">ABOUT AUDIT ROLES</a>
             </li>
           </ul>
           <Link to="" className="btn-login">
