@@ -1,15 +1,13 @@
-*{
+* {
   margin: 0 auto;
   text-align: center;
-
 }
 .container {
   width: 80%;
   margin: 0 auto;
 }
 
-
-/* STYKE NAVBAR */
+/* START STYLE NAVBAR */
 .navbar {
   justify-content: space-between;
   width: 120%;
@@ -18,7 +16,7 @@
   justify-content: space-between;
 }
 
-.navbar .brand-logo  {
+.navbar .brand-logo {
   height: 60px;
   margin-left: -190px;
 }
@@ -50,17 +48,17 @@
 }
 
 .nav-list li a::after {
-  content: '';
+  content: "";
   display: block;
   width: 0;
   height: 2px;
   background: #fff; /* Warna putih untuk underline saat hover */
-  transition: width .3s;
+  transition: width 0.3s;
 }
 .nav-list li a:hover::after,
 .nav-list li a:focus::after {
   width: 100%;
-  transition: width .3s;
+  transition: width 0.3s;
 }
 
 .btn-login {
@@ -73,9 +71,9 @@
   transition: background-color 0.3s ease;
 }
 
-/* STYLE NAVBAR */
+/* END STYLE NAVBAR */
 
-/* STYLE HOMEPAGE */
+/* START STYLE HOMEPAGE */
 .Hero img {
   margin-top: -10%;
   width: 1500px;
@@ -88,7 +86,6 @@
   display: grid;
   text-align: center;
   padding: 2rem 0;
-  
 }
 
 .hero-section h1 {
@@ -101,20 +98,19 @@
   justify-content: center;
   gap: 1rem;
   margin-bottom: 2rem;
-
 }
 
 .hero-images img {
   width: 20%;
   height: 100px;
   border-radius: 10px;
-  transition:  0.2s ease;
+  transition: 0.2s ease;
   cursor: pointer;
 }
 
 .hero-images :hover {
   transform: scale(1.2);
-  box-shadow: 5px 5px 15px rgba(0,0,0,0,6);
+  box-shadow: 5px 5px 15px rgba(0, 0, 0, 0, 6);
 }
 
 .company-info {
@@ -129,4 +125,10 @@
 .company-info p {
   margin: 0;
 }
-/* STULE HEROSECTION */
+/* END STYLE HEROSECTION */
+
+/*STYLE ABOUT US*/
+
+/* START ABOUT US*/
+
+/* END ABOUT US*/
