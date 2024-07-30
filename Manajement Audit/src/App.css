@@ -143,4 +143,35 @@
 
 /* START ABOUT US*/
 
+.about-section {
+  text-align: center;
+  margin: 60px;
+}
+
+.about {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
+}
+
+.about-images {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.circle-image {
+  width: 500px;
+  height: 500px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.vertical-line {
+  width: 70px;
+  height: 300px;
+  background-color: black;
+  margin: 0 20px;
+}
 /* END ABOUT US*/
