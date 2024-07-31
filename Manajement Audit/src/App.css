@@ -398,6 +398,7 @@
   padding: 10px 20px;
 }
 
+
 .main-content {
   margin-left: 200px;
   width: calc(100% - 200px);
@@ -418,6 +419,122 @@
   background-color: #f0f0f0;
   height: 400px;
   padding: 20px;
+  border-radius: 20px;
+}
+
+.data-user {
+  margin: 20px;
+  font-family: Arial, sans-serif;
+}
+
+.data-user-content {
+  margin-top: 10px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th, td {
+  border: 1px solid #ddd;
+  padding: 8px;
+}
+
+th {
+  background-color: #f2f2f2;
+  text-align: left;
+}
+
+button {
+  margin: 0 5px;
+  padding: 5px 10px;
+  cursor: pointer;
+}
+
+
+.add-user-button{
+  width: 100px;
+  height: 30px;
+  margin-top: -40px;
+  margin-left: 85%;
+  border-radius: 9px;
+  background-color: #001f6d;
+  color: #ddd;
+
+}
+.data-user {
+  margin: 20px;
+  font-family: Arial, sans-serif;
+}
+
+.data-user-content {
+  margin-top: 10px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th, td {
+  border: 1px solid #ddd;
+  padding: 8px;
+}
+
+th {
+  background-color: #f2f2f2;
+  text-align: left;
+}
+
+button {
+  margin: 0 5px;
+  padding: 5px 10px;
+  cursor: pointer;
+}
+
+.add-user-button {
+  margin-bottom: 10px;
+}
+
+.modal {
+  background: white;
+  padding: 20px;
+  border-radius: 5px;
+  width: 400px;
+  max-width: 90%;
+  margin: auto;
+  position: relative;
+}
+
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px;
+}
+
+label {
+  display: block;
+  margin-bottom: 5px;
+}
+
+input {
+  width: 100%;
+  padding: 8px;
+  margin-bottom: 10px;
+  box-sizing: border-box;
 }
 
 
