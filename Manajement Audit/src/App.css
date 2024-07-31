@@ -3,6 +3,7 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+
 }
 
 
@@ -260,3 +261,164 @@
 
 /* END STYLE ABOUTROLES SECTION */
 
+/* START ADMIN */
+/* .SideNav{
+  display: flex;
+  background-color: #001f6d;
+  background-repeat: no-repeat;
+}
+
+.SideNav img{
+  width: 100px;
+  margin-left: 50px;
+  margin-top: 20px;
+}
+
+.SideNav-text{
+  font-weight: bold;
+  display: fixed;
+  font-size: 30px;
+  color: #fff;
+  text-align: left;
+  margin-left: 30px;
+  margin-top: 40px;
+}
+
+.dashboard {
+  padding: 20px;
+  margin-top: 20px;
+  margin-left: 0px;
+  color: black;
+}
+
+.dashboard-content {
+  background-color: #f0f0f0;
+  height: 500px;
+  border-radius: 20px;
+} */
+.admin-section {
+  display: flex;
+  flex-direction: column;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #2d2d4d;
+  color: white;
+  padding: 10px 20px;
+}
+
+.logo-container {
+  display: flex;
+  
+}
+
+.brand-logo {
+  width: 100px;
+  margin-left: 10%;
+  margin-top: 20px;
+}
+
+.SideNav-text{
+  font-weight: bold;
+  display: fixed;
+  font-size: 30px;
+  color: #fff;
+  margin-left: 20px;
+  margin-top: 40px;
+}
+
+.hamburger {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 24px;
+  cursor: pointer;
+  margin-left: -60%;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+}
+
+.user-image {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  margin-right: 10px;
+}
+
+.user-name {
+  margin-right: 10px;
+}
+
+.logout-button {
+  background-color: transparent;
+  border: 1px solid white;
+  color: white;
+  padding: 5px 10px;
+  cursor: pointer;
+}
+
+.logout-button:hover {
+  background-color: white;
+  color: #2d2d4d;
+}
+
+.content-wrapper {
+  display: flex;
+  
+}
+
+.side-nav {
+  width: 200px;
+  background-color: #2d2d4d;
+  color: white;
+  height: calc(100vh - 60px); 
+  position: fixed;
+  top: 138px;
+  left: 0;
+  transition: width 0.3s;
+  padding-top: 20px;
+}
+
+.side-nav.collapsed {
+  width: 0px;
+}
+
+.side-nav nav ul {
+  list-style: none;
+  padding: 0;
+}
+
+.side-nav nav ul li {
+  padding: 10px 20px;
+}
+
+.main-content {
+  margin-left: 200px;
+  width: calc(100% - 200px);
+  padding: 20px;
+  transition: margin-left 0.3s, width 0.3s;
+}
+
+.admin-section.collapsed .main-content {
+  margin-left: 50px;
+  width: calc(100% - 50px);
+}
+
+.dashboard {
+  margin-top: 20px;
+}
+
+.dashboard-content {
+  background-color: #f0f0f0;
+  height: 400px;
+  padding: 20px;
+}
+
+
+/* END ADMIN */
