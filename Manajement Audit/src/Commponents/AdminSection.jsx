@@ -1,14 +1,10 @@
-<<<<<<< HEAD
+
 import React, { useState } from 'react';
 import LogoPTDI from '../Asset/LogoPTDI.png';
 import  Modal  from 'react-modal';
 import '../App.css';
-=======
-import React, { useState } from "react";
-import LogoPTDI from "../Asset/LogoPTDI.png";
 import LogoUser from "../Asset/user.png";
-import "../App.css";
->>>>>>> 7c0cfd6 (update component)
+
 
 
 const AdminSection = () => {
