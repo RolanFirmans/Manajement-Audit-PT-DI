@@ -1,7 +1,14 @@
+<<<<<<< HEAD
 import React, { useState } from 'react';
 import LogoPTDI from '../Asset/LogoPTDI.png';
 import  Modal  from 'react-modal';
 import '../App.css';
+=======
+import React, { useState } from "react";
+import LogoPTDI from "../Asset/LogoPTDI.png";
+import LogoUser from "../Asset/user.png";
+import "../App.css";
+>>>>>>> 7c0cfd6 (update component)
 
 
 const AdminSection = () => {
@@ -21,7 +28,7 @@ const AdminSection = () => {
   };
 
   return (
-    <div className={`admin-section ${isCollapsed ? 'collapsed' : ''}`}>
+    <div className={`admin-section ${isCollapsed ? "collapsed" : ""}`}>
       <header className="header">
         <div className="logo-container">
           <img src={LogoPTDI} className="brand-logo" alt="Logo" />
@@ -31,13 +38,13 @@ const AdminSection = () => {
           ☰
         </button>
         <div className="user-info">
-          <img src="/path-to-user-image.jpg" alt="User" className="user-image" />
           <p className="user-name">USER</p>
+          <img src={LogoUser} alt="User" className="user-image" />
           <button className="logout-button">Log Out</button>
         </div>
       </header>
       <div className="content-wrapper">
-        <div className={`side-nav ${isCollapsed ? 'collapsed' : ''}`}>
+        <div className={`side-nav ${isCollapsed ? "collapsed" : ""}`}>
           <nav>
             <ul>
               <li onClick={() => setActivePage('Dashboard')}>Dashboard</li>

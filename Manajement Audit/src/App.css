@@ -1,11 +1,8 @@
-
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-
 }
-
 
 /* START STYLE NAVBAR */
 .navbar {
@@ -38,7 +35,7 @@
 }
 
 .nav-list li a {
-  color: #f80000; /* Warna putih untuk tulisan navbar */
+  color: #f80000;
   text-decoration: none;
   font-weight: bold;
   font-size: 1rem;
@@ -47,7 +44,7 @@
 
 .nav-list li a:hover,
 .nav-list li a:focus {
-  color: #fff; /* Warna putih untuk tulisan navbar saat hover atau focus */
+  color: #fff;
 }
 
 .nav-list li a::after {
@@ -55,7 +52,7 @@
   display: block;
   width: 0;
   height: 2px;
-  background: #fff; /* Warna putih untuk underline saat hover */
+  background: #fff;
   transition: width 0.3s;
 }
 .nav-list li a:hover::after,
@@ -83,10 +80,9 @@
   background-position: center;
   width: 100%;
 
-  height: 500px; 
+  height: 500px;
 
   height: 400px;
-
 }
 /* STYLE HOMEPAGE */
 
@@ -188,14 +184,13 @@
 }
 /* END ABOUT US*/
 
-
 /* LOGIN START */
 
 .ImgLogin img {
   height: 100%;
   width: 100%;
   background-size: cover;
-  background-position: center; 
+  background-position: center;
 }
 /* lOOGIN END */
 
@@ -261,6 +256,10 @@
 
 /* END STYLE ABOUTROLES SECTION */
 
+/* START Global Admin, SPI, Auditee, Auditor */
+
+/* END Global Admin, SPI, Auditee, Auditor */
+
 /* START ADMIN */
 /* .SideNav{
   display: flex;
@@ -312,7 +311,6 @@
 
 .logo-container {
   display: flex;
-  
 }
 
 .brand-logo {
@@ -321,7 +319,7 @@
   margin-top: 20px;
 }
 
-.SideNav-text{
+.SideNav-text {
   font-weight: bold;
   display: fixed;
   font-size: 30px;
@@ -370,14 +368,13 @@
 
 .content-wrapper {
   display: flex;
-  
 }
 
 .side-nav {
   width: 200px;
   background-color: #2d2d4d;
   color: white;
-  height: calc(100vh - 60px); 
+  height: calc(100vh - 60px);
   position: fixed;
   top: 138px;
   left: 0;
@@ -537,5 +534,177 @@ input {
   box-sizing: border-box;
 }
 
-
 /* END ADMIN */
+
+/* START SPI */
+.spi-section.collapsed .main-content {
+  margin-left: 50px;
+  width: calc(100% - 50px);
+}
+
+.menuSpi {
+  list-style: none;
+  padding: 0;
+}
+.menuSpi.collapsed > li {
+  width: 0px;
+}
+.menuSpi > li {
+  cursor: pointer;
+  padding: 10px;
+  margin-bottom: 5px;
+}
+
+.dropdownSpi {
+  position: relative;
+}
+
+.dropdownSpi .submenuSpi {
+  display: none;
+  margin-top: 10px;
+  padding-left: 20px;
+  list-style-type: decimal;
+}
+
+.dropdownSpi.open .submenuSpi {
+  display: block;
+}
+
+/* END SPI */
+
+/* START ADMIN AUDIT IT  */
+
+.contentAAIS-wrapper {
+  display: flex;
+}
+.sideAAIS-nav {
+  width: 200px;
+  background-color: #2d2d4d;
+  color: white;
+  height: calc(100vh - 60px);
+  position: fixed;
+  top: 138px;
+  left: 0;
+  transition: width 0.3s;
+  padding-top: 20px;
+}
+
+.sideAAIS-nav.collapsed {
+  width: 0px;
+}
+
+.sideAAIS-nav nav ul {
+  list-style: none;
+  padding: 0;
+}
+
+.sideAAIS-nav nav ul li {
+  padding: 10px 20px;
+}
+
+.AdminAuditIt-section.collapsed .main-content {
+  margin-left: 50px;
+  width: calc(100% - 50px);
+}
+
+.menuAdminAuditIt {
+  list-style: none;
+  padding: 0;
+}
+
+.menuAdminAuditIt > li {
+  cursor: pointer;
+  padding: 10px;
+  margin-bottom: 5px;
+}
+
+.dropdownAdminAuditIt {
+  position: relative;
+}
+
+.dropdownAdminAuditIt .submenuAdminAuditIt {
+  display: none;
+  margin-top: 10px;
+  padding-left: 20px;
+  list-style-type: decimal;
+}
+
+.dropdownAdminAuditIt.open .submenuAdminAuditIt {
+  display: contents;
+}
+
+/* END ADMIN AUDIT IT  */
+
+/* START AUDITEE */
+.Auditee-section.collapsed .main-content {
+  margin-left: 50px;
+  width: calc(100% - 50px);
+}
+
+.menuAuditee {
+  list-style: none;
+  padding: 0;
+}
+
+.menuAuditee > li {
+  cursor: pointer;
+  padding: 10px;
+  margin-bottom: 5px;
+}
+
+.dropdownAuditee {
+  position: relative;
+}
+
+.dropdownAuditee .submenuAuditee {
+  display: none;
+  margin-top: 10px;
+  padding-left: 20px;
+  list-style-type: decimal;
+}
+
+.dropdownAuditee.open .submenuAuditee {
+  display: block;
+}
+/* END AUDITEE */
+
+/* START AUDITOR */
+
+.Auditor-section.collapsed .main-content {
+  margin-left: 50px;
+  width: calc(100% - 50px);
+}
+
+.menuAuditor {
+  list-style: none;
+  padding: 0;
+}
+
+.menuAuditor > li {
+  cursor: pointer;
+  padding: 10px;
+  margin-bottom: 5px;
+}
+
+.dropdownAuditor {
+  position: relative;
+}
+
+.dropdownAuditor .submenuAuditor {
+  display: none;
+  margin-top: 10px;
+  padding-left: 20px;
+  list-style-type: decimal;
+}
+
+.dropdownAuditor.open .submenuAuditor {
+  display: block;
+}
+
+/* END AUDITOR */
+
+/* START  */
+/* END  */
+
+/* START  */
+/* END  */

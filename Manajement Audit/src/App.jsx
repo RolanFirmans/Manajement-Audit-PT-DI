@@ -22,10 +22,7 @@ function App() {
         <Route path="AdminAuditIT" element={<AdminAuditIT />} />
         <Route path="SPI" element={<SPI />} />
         <Route path="Auditor" element={<Auditor />} />
-        <Route path="Auditee" element={<Auditee/>} />
-
-
-        
+        <Route path="Auditee" element={<Auditee />} />
       </Routes>
     </div>
   );

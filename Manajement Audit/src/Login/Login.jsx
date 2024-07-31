@@ -1,10 +1,10 @@
-import React from 'react'
-import LoginSection from '../Commponents/LoginSection'
+import React from "react";
+import LoginSection from "../Commponents/LoginSection";
 
 export default function Login() {
   return (
     <div>
-      <LoginSection/>
+      <LoginSection />
     </div>
-  )
+  );
 }
