@@ -260,7 +260,7 @@
 
 /* END Global Admin, SPI, Auditee, Auditor */
 
-/* START ADMIN */
+ /* START ADMIN  */
 /* .SideNav{
   display: flex;
   background-color: #001f6d;
@@ -295,6 +295,7 @@
   height: 500px;
   border-radius: 20px;
 } */
+
 .admin-section {
   display: flex;
   flex-direction: column;
@@ -494,83 +495,94 @@ button {
   margin-bottom: 10px;
 }
 
-.modal {
-  background: white;
+
+.user-modal {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  right: auto;
+  bottom: auto;
+  transform: translate(-50%, -50%);
+  background: #fff;
   padding: 20px;
-  border-radius: 5px;
+  border-radius: 8px;
   width: 400px;
   max-width: 90%;
-  margin: auto;
-  position: relative;
 }
 
-.overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.5);
+.user-modal-overlay {
+  background-color: rgba(0, 0, 0, 0.75);
+}
+
+.modal-content {
   display: flex;
-  align-items: center;
-  justify-content: center;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.modal-content label {
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.modal-input,
+.modal-select {
+  width: 100%;
+  padding: 8px;
+  margin-bottom: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
 }
 
 .modal-actions {
   display: flex;
   justify-content: space-between;
-  margin-top: 10px;
+  margin-top: 20px;
 }
 
-label {
-  display: block;
-  margin-bottom: 5px;
+.modal-cancel,
+.modal-add,
+.modal-delete {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
 }
 
-input {
-  width: 100%;
-  padding: 8px;
-  margin-bottom: 10px;
-  box-sizing: border-box;
+.modal-cancel {
+  background-color: #ccc;
 }
 
+.modal-add {
+  background-color: #007bff;
+  color: white;
+}
+
+.modal-delete {
+  background-color: #dc3545;
+  color: white;
+}
+
+
+.delete-modal {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  right: auto;
+  bottom: auto;
+  transform: translate(-50%, -50%);
+  background: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  width: 300px;
+  max-width: 90%;
+}
+
+.delete-modal-overlay {
+  background-color: rgba(0, 0, 0, 0.75);
+}
 /* END ADMIN */
 
-/* START SPI */
-.spi-section.collapsed .main-content {
-  margin-left: 50px;
-  width: calc(100% - 50px);
-}
-
-.menuSpi {
-  list-style: none;
-  padding: 0;
-}
-.menuSpi.collapsed > li {
-  width: 0px;
-}
-.menuSpi > li {
-  cursor: pointer;
-  padding: 10px;
-  margin-bottom: 5px;
-}
-
-.dropdownSpi {
-  position: relative;
-}
-
-.dropdownSpi .submenuSpi {
-  display: none;
-  margin-top: 10px;
-  padding-left: 20px;
-  list-style-type: decimal;
-}
-
-.dropdownSpi.open .submenuSpi {
-  display: block;
-}
-
-/* END SPI */
 
 /* START ADMIN AUDIT IT  */
 
