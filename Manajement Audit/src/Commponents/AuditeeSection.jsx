@@ -6,6 +6,7 @@ import "../App.css";
 const AuditeeSection = () => {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [activePage, setActivePage] = useState("Dashboard");
 
   const toggleSidebar = () => {
     setIsCollapsed(!isCollapsed);
@@ -13,6 +14,32 @@ const AuditeeSection = () => {
 
   const toggleDropdownSpi = () => {
     setIsDropdownOpen(!isDropdownOpen);
+  };
+
+  const handleEvidenceClick = () => {
+    setActivePage("Evidence");
+    toggleDropdownSpi();
+  };
+
+  const renderContent = () => {
+    switch (activePage) {
+      case "Dashboard":
+        return <Dashboard />;
+      case "Upload File Excel":
+        return <UploadFileExcel />;
+      case "Evidence":
+        return <Evidence />;
+      case "DGCA":
+        return <DGCA />;
+      case "FINANCE":
+        return <Finance />;
+      case "ITML":
+        return <ITML />;
+      case "PARKER RUSSEL":
+        return <ParkerRussel />;
+      default:
+        return null;
+    }
   };
 
   return (
@@ -37,27 +64,29 @@ const AuditeeSection = () => {
           <nav>
             <ul className="menuAuditee">
               <li>Dashboard</li>
-
               <li
-                className={`dropdownAuditee ${isDropdownOpen ? "open" : ""}`}
-                onClick={toggleDropdownSpi}
+                className={`dropdownSpi ${isDropdownOpen ? "open" : ""}`}
+                onClick={handleEvidenceClick}
               >
                 Evidence
                 {isDropdownOpen && (
-                  <ol className="submenuAuditee">
-                    <li>DGCA</li>
-                    <li>FINANCE</li>
-                    <li>ITML</li>
-                    <li>PARKER RUSSEL</li>
+                  <ol
+                    className="submenuSpi"
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    <li onClick={() => setActivePage("DGCA")}>DGCA</li>
+                    <li onClick={() => setActivePage("FINANCE")}>FINANCE</li>
+                    <li onClick={() => setActivePage("ITML")}>ITML</li>
+                    <li onClick={() => setActivePage("PARKER RUSSEL")}>
+                      PARKER RUSSEL
+                    </li>
                   </ol>
                 )}
               </li>
             </ul>
           </nav>
         </div>
-        <main className="main-content">
-          <Dashboard />
-        </main>
+        <main className="main-content">{renderContent()}</main>
       </div>
     </div>
   );
@@ -70,6 +99,44 @@ const Dashboard = () => {
       <div className="dashboard-content">
         {/* Dashboard content goes here */}
       </div>
+    </div>
+  );
+};
+
+const Evidence = () => (
+  <div className="evidence-content">
+    <h2>Evidence</h2>
+  </div>
+);
+
+const DGCA = () => {
+  return (
+    <div className="dgca-content">
+      <h2>DGCA</h2>
+    </div>
+  );
+};
+
+const Finance = () => {
+  return (
+    <div className="finance-content">
+      <h2>FINANCE</h2>
+    </div>
+  );
+};
+
+const ITML = () => {
+  return (
+    <div className="itml-content">
+      <h2>ITML</h2>
+    </div>
+  );
+};
+
+const ParkerRussel = () => {
+  return (
+    <div className="parker-russel-content">
+      <h2>PARKER RUSSEL</h2>
     </div>
   );
 };
