@@ -2,11 +2,17 @@ import React, { useState } from "react";
 import LogoPTDI from "../Asset/LogoPTDI.png";
 import LogoUser from "../Asset/user.png";
 import "../App.css";
+import DashboardAuditor from "../Auditor/DashboardAuditor";
+import DgcaAuditor from "../Auditor/DgcaAuditor";
+import EvidenceAuditor from "../Auditor/EvidanceAuditor";
+import FinanceAuditor from "../Auditor/FinanceAuditor";
+import ItmlAuditor from "../Auditor/ItmlAuditor";
+import ParkerRusselAuditor from "../Auditor/ParkerRusselAuditor";
 
 const AuditorSection = () => {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [activePage, setActivePage] = useState("Dashboard");
+  const [activePage, setActivePage] = useState("DashboardAuditor");
 
   const toggleSidebar = () => {
     setIsCollapsed(!isCollapsed);
@@ -17,24 +23,24 @@ const AuditorSection = () => {
   };
 
   const handleEvidenceClick = () => {
-    setActivePage("Evidence");
+    setActivePage("EvidenceAuditor");
     toggleDropdownAuditor();
   };
 
   const renderContent = () => {
     switch (activePage) {
-      case "Dashboard":
-        return <Dashboard />;
-      case "Evidence":
-        return <Evidence />;
+      case "DashboardAuditor":
+        return <DashboardAuditor />;
+      case "EvidenceAuditor":
+        return <EvidenceAuditor />;
       case "DGCA":
-        return <DGCA />;
+        return <DgcaAuditor />;
       case "FINANCE":
-        return <Finance />;
+        return <FinanceAuditor />;
       case "ITML":
-        return <ITML />;
+        return <ItmlAuditor />;
       case "PARKER RUSSEL":
-        return <ParkerRussel />;
+        return <ParkerRusselAuditor />;
       default:
         return null;
     }
@@ -61,7 +67,9 @@ const AuditorSection = () => {
         <div className={`side-nav ${isCollapsed ? "collapsed" : ""}`}>
           <nav>
             <ul className="menuAuditor">
-              <li onClick={() => setActivePage("Dashboard")}>Dashboard</li>
+              <li onClick={() => setActivePage("DashboardAuditor")}>
+                Dashboard
+              </li>
               <li
                 className={`dropdownAuditor ${isDropdownOpen ? "open" : ""}`}
                 onClick={handleEvidenceClick}
@@ -86,55 +94,6 @@ const AuditorSection = () => {
         </div>
         <main className="main-content">{renderContent()}</main>
       </div>
-    </div>
-  );
-};
-
-const Dashboard = () => {
-  return (
-    <div className="dashboard">
-      <h2>Dashboard</h2>
-      <div className="dashboard-content">
-        {/* Dashboard content goes here */}
-      </div>
-    </div>
-  );
-};
-
-const Evidence = () => (
-  <div className="evidence-content">
-    <h2>Evidence</h2>
-  </div>
-);
-
-const DGCA = () => {
-  return (
-    <div className="dgca-content">
-      <h2>DGCA</h2>
-    </div>
-  );
-};
-
-const Finance = () => {
-  return (
-    <div className="finance-content">
-      <h2>FINANCE</h2>
-    </div>
-  );
-};
-
-const ITML = () => {
-  return (
-    <div className="itml-content">
-      <h2>ITML</h2>
-    </div>
-  );
-};
-
-const ParkerRussel = () => {
-  return (
-    <div className="parker-russel-content">
-      <h2>PARKER RUSSEL</h2>
     </div>
   );
 };

@@ -2,11 +2,17 @@ import React, { useState } from "react";
 import LogoPTDI from "../Asset/LogoPTDI.png";
 import LogoUser from "../Asset/user.png";
 import "../App.css";
+import DashboardAait from "../Admin Audit IT/DashboardAait";
+import DgcaAait from "../Admin Audit IT/DgcaAait";
+import EvidenceAait from "../Admin Audit IT/EvidanceAait";
+import FinanceAait from "../Admin Audit IT/FinanceAait";
+import ItmlAait from "../Admin Audit IT/ItmlAait";
+import ParkerRusselAait from "../Admin Audit IT/ParkerRusselAait";
 
 const AdminAuditITSection = () => {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [activePage, setActivePage] = useState("Dashboard");
+  const [activePage, setActivePage] = useState("DashboardAait");
 
   const toggleSidebar = () => {
     setIsCollapsed(!isCollapsed);
@@ -17,24 +23,24 @@ const AdminAuditITSection = () => {
   };
 
   const handleEvidenceClick = () => {
-    setActivePage("Evidence");
+    setActivePage("EvidenceAait");
     toggleDropdownAdminAuditIt();
   };
 
   const renderContent = () => {
     switch (activePage) {
-      case "Dashboard":
-        return <Dashboard />;
-      case "Evidence":
-        return <Evidence />;
+      case "DashboardAait":
+        return <DashboardAait />;
+      case "EvidenceAait":
+        return <EvidenceAait />;
       case "DGCA":
-        return <DGCA />;
+        return <DgcaAait />;
       case "FINANCE":
-        return <Finance />;
+        return <FinanceAait />;
       case "ITML":
-        return <ITML />;
+        return <ItmlAait />;
       case "PARKER RUSSEL":
-        return <ParkerRussel />;
+        return <ParkerRusselAait />;
       default:
         return null;
     }
@@ -61,7 +67,7 @@ const AdminAuditITSection = () => {
         <div className={`sideAAIS-nav ${isCollapsed ? "collapsed" : ""}`}>
           <nav>
             <ul className="menuAAIS">
-              <li onClick={() => setActivePage("Dashboard")}>Dashboard</li>
+              <li onClick={() => setActivePage("DashboardAait")}>Dashboard</li>
               <li
                 className={`dropdownAIIS ${isDropdownOpen ? "open" : ""}`}
                 onClick={handleEvidenceClick}
@@ -86,55 +92,6 @@ const AdminAuditITSection = () => {
         </div>
         <main className="main-content">{renderContent()}</main>
       </div>
-    </div>
-  );
-};
-
-const Dashboard = () => {
-  return (
-    <div className="dashboard">
-      <h2>Dashboard</h2>
-      <div className="dashboard-content">
-        {/* Dashboard content goes here */}
-      </div>
-    </div>
-  );
-};
-
-const Evidence = () => (
-  <div className="evidence-content">
-    <h2>Evidence</h2>
-  </div>
-);
-
-const DGCA = () => {
-  return (
-    <div className="dgca-content">
-      <h2>DGCA</h2>
-    </div>
-  );
-};
-
-const Finance = () => {
-  return (
-    <div className="finance-content">
-      <h2>FINANCE</h2>
-    </div>
-  );
-};
-
-const ITML = () => {
-  return (
-    <div className="itml-content">
-      <h2>ITML</h2>
-    </div>
-  );
-};
-
-const ParkerRussel = () => {
-  return (
-    <div className="parker-russel-content">
-      <h2>PARKER RUSSEL</h2>
     </div>
   );
 };
