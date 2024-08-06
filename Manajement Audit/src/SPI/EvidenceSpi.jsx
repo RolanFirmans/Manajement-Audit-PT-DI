@@ -4,23 +4,6 @@ import "../App.css";
 
 Modal.setAppElement("#root");
 
-const initialOrders = [
-  {
-    no: 1,
-    dataAndDocumentNeeded: "Financial Audit Report",
-    phase: "Phase 2",
-    status: "In Progress",
-    deadline: "15 August 2024",
-    remarksByAuditee: "",
-    remarksByAuditor:
-      "FY22/6, file name: 90-FIN-02, Laporan Audit Keuangan.pdf",
-    auditee: "Finance",
-    auditor: "Madya",
-    statusComplete: "Pending",
-    action: "",
-  },
-];
-
 const EvidenceSpi = () => {
   const [orders, setOrders] = useState(() => {
     const savedOrders = localStorage.getItem("orders");
@@ -30,7 +13,6 @@ const EvidenceSpi = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [newUser, setNewUser] = useState({
-    no: "",
     dataAndDocumentNeeded: "",
     phase: "",
     status: "",
@@ -45,6 +27,7 @@ const EvidenceSpi = () => {
 
   const [editingUser, setEditingUser] = useState(null);
   const [userToDelete, setUserToDelete] = useState(null);
+  const [taskToggled, setTaskToggled] = useState({});
 
   useEffect(() => {
     localStorage.setItem("orders", JSON.stringify(orders));
@@ -55,12 +38,11 @@ const EvidenceSpi = () => {
     setNewUser((prev) => ({ ...prev, [name]: value }));
   };
 
-  //beda
   const handleAddUser = () => {
     if (editingUser) {
       setOrders((prev) =>
         prev.map((order) =>
-          order.no === editingUser.no ? { ...newUser } : order
+          order.no === editingUser.no ? { ...editingUser, ...newUser } : order
         )
       );
       setEditingUser(null);
@@ -74,8 +56,6 @@ const EvidenceSpi = () => {
     resetNewUser();
   };
 
-  //beda
-
   const handleEditUser = (user) => {
     setEditingUser(user);
     setNewUser(user);
@@ -88,14 +68,25 @@ const EvidenceSpi = () => {
   };
 
   const confirmDeleteUser = () => {
-    setOrders((prev) => prev.filter((order) => order.no !== userToDelete.no));
+    setOrders((prev) => {
+      // Hapus item yang terpilih
+      const updatedOrders = prev.filter(
+        (order) => order.no !== userToDelete.no
+      );
+
+      // Urutkan ulang nomor urut
+      return updatedOrders.map((order, index) => ({
+        ...order,
+        no: index + 1, // Mengatur nomor urut baru
+      }));
+    });
+
     setIsDeleteModalOpen(false);
     setUserToDelete(null);
   };
 
   const resetNewUser = () => {
     setNewUser({
-      no: "",
       dataAndDocumentNeeded: "",
       phase: "",
       status: "",
@@ -109,6 +100,13 @@ const EvidenceSpi = () => {
     });
   };
 
+  const handleToggleComplete = (orderNo) => {
+    setTaskToggled((prevToggled) => ({
+      ...prevToggled,
+      [orderNo]: !prevToggled[orderNo],
+    }));
+  };
+
   return (
     <div className="data-user">
       <h2>Data User</h2>
@@ -117,7 +115,7 @@ const EvidenceSpi = () => {
           className="add-user-button"
           onClick={() => {
             setIsModalOpen(true);
-            setNewUser(); //beda
+            resetNewUser(); // Reset newUser when adding a new user
             setEditingUser(null);
           }}
         >
@@ -153,12 +151,24 @@ const EvidenceSpi = () => {
                 <td>{order.remarksByAuditor}</td>
                 <td>{order.auditee}</td>
                 <td>{order.auditor}</td>
-                <td>{order.statusComplete}</td>
+                <td
+                  key={order.no}
+                  style={{
+                    backgroundColor: taskToggled[order.no]
+                      ? "red"
+                      : "transparent",
+                  }}
+                >
+                  {order.statusComplete}
+                </td>
                 <td>
                   <button onClick={() => handleDeleteUser(order)}>
                     Delete
                   </button>
                   <button onClick={() => handleEditUser(order)}>Edit</button>
+                  <button onClick={() => handleToggleComplete(order.no)}>
+                    Task
+                  </button>
                 </td>
               </tr>
             ))}
@@ -174,14 +184,6 @@ const EvidenceSpi = () => {
       >
         <h3>{editingUser ? "Edit Data User" : "Add Data User"}</h3>
         <div className="modal-content">
-          <label>No</label>
-          <input
-            type="text"
-            name="no"
-            value={newUser.no}
-            onChange={handleInputChange}
-            className="modal-input"
-          />
           <label>Data and Document Needed</label>
           <input
             type="text"
@@ -206,13 +208,13 @@ const EvidenceSpi = () => {
             className="modal-select"
           >
             <option value="">Select Status</option>
-            <option value="In Progress">In Progress</option>
-            <option value="Completed">Completed</option>
-            <option value="Pending">Pending</option>
+            <option value="In Progress">Pending</option>
+            <option value="Completed">Not Available</option>
+            <option value="Pending">Not Applicable</option>
           </select>
           <label>Deadline</label>
           <input
-            type="text"
+            type="date"
             name="deadline"
             value={newUser.deadline}
             onChange={handleInputChange}
@@ -250,27 +252,11 @@ const EvidenceSpi = () => {
             className="modal-select"
           >
             <option value="">Select Auditor</option>
-            <option value="Dgca">DGCA</option>
+            <option value="DGCA">DGCA</option>
             <option value="Finance">Finance</option>
-            <option value="Itml">ITML</option>
+            <option value="ITML">ITML</option>
             <option value="ParkerRussel">Parker Russel</option>
           </select>
-          <label>Status Complete</label>
-          <input
-            type="text"
-            name="statusComplete"
-            value={newUser.statusComplete}
-            onChange={handleInputChange}
-            className="modal-input"
-          />
-          <label>Action</label>
-          <input
-            type="text"
-            name="action"
-            value={newUser.action}
-            onChange={handleInputChange}
-            className="modal-input"
-          />
         </div>
         <div className="modal-actions">
           <button
@@ -292,7 +278,8 @@ const EvidenceSpi = () => {
         className="user-modal"
         overlayClassName="user-modal-overlay"
       >
-        <h3>Are you sure you want to delete this user?</h3>
+        <h3>Confirm Delete</h3>
+        <p>Are you sure you want to delete this user?</p>
         <div className="modal-actions">
           <button
             onClick={() => setIsDeleteModalOpen(false)}

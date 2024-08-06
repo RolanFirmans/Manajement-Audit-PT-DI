@@ -1,12 +1,16 @@
 import React, { useState } from "react";
 import "../App.css";
 import axios from "axios";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 const UploadFileExcelSpi = () => {
   const [file, setFile] = useState(null);
   const [uploadProgress, setUploadProgress] = useState(0);
   const [message, setMessage] = useState("");
   const [showMessage, setShowMessage] = useState(false);
+  const [uploadDate, setUploadDate] = useState("");
+  const [selectedDate, setSelectedDate] = useState(new Date());
 
   const handleFileChange = (e) => {
     setFile(e.target.files[0]);
@@ -52,6 +56,7 @@ const UploadFileExcelSpi = () => {
         </span>
       );
       setShowMessage(true);
+      setUploadDate(new Date().toLocaleDateString());
       setTimeout(() => setShowMessage(false), 3000);
       setFile(null);
       setUploadProgress(0);
@@ -109,6 +114,17 @@ const UploadFileExcelSpi = () => {
               </span>
             </div>
             <i>Format .XLS atau .XLSX (Excel)</i>
+          </div>
+        </fieldset>
+        <fieldset className="label_side" id="facnumber">
+          <label>Select Date</label>
+          <div className="clearfix">
+            <DatePicker
+              selected={selectedDate}
+              onChange={(date) => setSelectedDate(date)}
+              dateFormat="MMMM d, yyyy"
+              className="form-control"
+            />
           </div>
         </fieldset>
       </form>
