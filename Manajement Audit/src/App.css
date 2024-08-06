@@ -260,7 +260,7 @@
 
 /* END Global Admin, SPI, Auditee, Auditor */
 
- /* START ADMIN  */
+/* START ADMIN  */
 /* .SideNav{
   display: flex;
   background-color: #001f6d;
@@ -396,7 +396,6 @@
   padding: 10px 20px;
 }
 
-
 .main-content {
   margin-left: 200px;
   width: calc(100% - 200px);
@@ -434,7 +433,8 @@ table {
   border-collapse: collapse;
 }
 
-th, td {
+th,
+td {
   border: 1px solid #ddd;
   padding: 8px;
 }
@@ -450,8 +450,7 @@ button {
   cursor: pointer;
 }
 
-
-.add-user-button{
+.add-user-button {
   width: 100px;
   height: 30px;
   margin-top: -40px;
@@ -459,7 +458,6 @@ button {
   border-radius: 9px;
   background-color: #001f6d;
   color: #ddd;
-
 }
 .data-user {
   margin: 20px;
@@ -475,7 +473,8 @@ table {
   border-collapse: collapse;
 }
 
-th, td {
+th,
+td {
   border: 1px solid #ddd;
   padding: 8px;
 }
@@ -494,7 +493,6 @@ button {
 .add-user-button {
   margin-bottom: 10px;
 }
-
 
 .user-modal {
   position: absolute;
@@ -563,7 +561,6 @@ button {
   color: white;
 }
 
-
 .delete-modal {
   position: absolute;
   top: 50%;
@@ -582,7 +579,6 @@ button {
   background-color: rgba(0, 0, 0, 0.75);
 }
 /* END ADMIN */
-
 
 /* START ADMIN AUDIT IT  */
 
@@ -715,8 +711,50 @@ button {
 
 /* END AUDITOR */
 
-/* START  */
-/* END  */
+/* START Login */
+
+/* Tambahkan ini di file CSS kamu */
+.Modal {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  padding: 20px;
+  background: white;
+  border-radius: 4px;
+  max-width: 500px;
+  width: 100%;
+}
+
+.Overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 5px;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 8px;
+  box-sizing: border-box;
+}
+
+button {
+  margin-top: 10px;
+}
+
+/* END Login */
 
 /* START  */
 /* END  */

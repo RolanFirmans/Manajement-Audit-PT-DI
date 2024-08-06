@@ -27,7 +27,6 @@ const EvidenceSpi = () => {
 
   const [editingUser, setEditingUser] = useState(null);
   const [userToDelete, setUserToDelete] = useState(null);
-  const [taskToggled, setTaskToggled] = useState({});
 
   useEffect(() => {
     localStorage.setItem("orders", JSON.stringify(orders));
@@ -100,13 +99,6 @@ const EvidenceSpi = () => {
     });
   };
 
-  const handleToggleComplete = (orderNo) => {
-    setTaskToggled((prevToggled) => ({
-      ...prevToggled,
-      [orderNo]: !prevToggled[orderNo],
-    }));
-  };
-
   return (
     <div className="data-user">
       <h2>Data User</h2>
@@ -151,24 +143,12 @@ const EvidenceSpi = () => {
                 <td>{order.remarksByAuditor}</td>
                 <td>{order.auditee}</td>
                 <td>{order.auditor}</td>
-                <td
-                  key={order.no}
-                  style={{
-                    backgroundColor: taskToggled[order.no]
-                      ? "red"
-                      : "transparent",
-                  }}
-                >
-                  {order.statusComplete}
-                </td>
+
                 <td>
                   <button onClick={() => handleDeleteUser(order)}>
                     Delete
                   </button>
                   <button onClick={() => handleEditUser(order)}>Edit</button>
-                  <button onClick={() => handleToggleComplete(order.no)}>
-                    Task
-                  </button>
                 </td>
               </tr>
             ))}

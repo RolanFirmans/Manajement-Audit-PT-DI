@@ -1,28 +1,35 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import LogoPTDI from "../Asset/LogoPTDI.png";
+import "../Commponents/LoginSection";
 import "../App.css";
 
 const Navbar = () => {
+  const navigate = useNavigate();
+
+  const openLoginPage = () => {
+    navigate("/login");
+  };
+
   return (
     <header>
       <nav className="navbar">
         <div className="container">
-          <img src={LogoPTDI} className="brand-logo" />
+          <img src={LogoPTDI} className="brand-logo" alt="Logo PTDI" />
           <ul className="nav-list">
             <li>
-              <a href="/">HOME</a>
+              <Link to="/">HOME</Link>
             </li>
             <li>
-              <a href="../About">ABOUT US</a>
+              <Link to="/About">ABOUT US</Link>
             </li>
             <li>
-              <a href="/AboutRoles">ABOUT AUDIT ROLES</a>
+              <Link to="/AboutRoles">ABOUT AUDIT ROLES</Link>
             </li>
           </ul>
-          <Link to="" className="btn-login">
-            Logout
-          </Link>
+          <button onClick={openLoginPage} className="btn-login">
+            Login
+          </button>
         </div>
       </nav>
     </header>

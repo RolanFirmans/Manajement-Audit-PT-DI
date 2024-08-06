@@ -151,7 +151,16 @@ const ParkerRussel = () => {
                 <td>{order.remarksByAuditor}</td>
                 <td>{order.auditee}</td>
                 <td>{order.auditor}</td>
-                <td>{order.statusComplete}</td>
+                <td
+                  key={order.no}
+                  style={{
+                    backgroundColor: taskToggled[order.no]
+                      ? "red"
+                      : "transparent",
+                  }}
+                >
+                  {order.statusComplete}
+                </td>
                 <td>
                   <button onClick={() => handleEditUser(order)}>Edit</button>
                   <button onClick={() => handleDeleteUser(order)}>
