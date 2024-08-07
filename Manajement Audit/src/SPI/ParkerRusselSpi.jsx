@@ -46,22 +46,17 @@ const ParkerRussel = () => {
 
   const handleAddUser = () => {
     if (editingUser) {
-      const updatedOrders = orders.map((order) =>
-        order.no === editingUser.no ? { ...order, ...newUser } : order
+      setOrders((prev) =>
+        prev.map((order) =>
+          order.no === editingUser.no ? { ...editingUser, ...newUser } : order
+        )
       );
-      setOrders(updatedOrders);
-      localStorage.setItem("orders", JSON.stringify(updatedOrders));
-      setEditingUser(null);
+      setEditingUser();
     } else {
-      const newOrders = [
-        ...orders,
-        {
-          no: orders.length > 0 ? orders[orders.length - 1].no + 1 : 1,
-          ...newUser,
-        },
-      ];
-      setOrders(newOrders);
-      localStorage.setItem("orders", JSON.stringify(newOrders));
+      setOrders((prev) => [
+        ...prev,
+        { no: prev.length > 0 ? prev[prev.length - 1].no + 1 : 1, ...newUser },
+      ]);
     }
     setIsModalOpen(false);
     resetNewUser();

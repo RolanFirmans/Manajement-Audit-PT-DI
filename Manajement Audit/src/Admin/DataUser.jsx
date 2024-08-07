@@ -1,25 +1,13 @@
-import React, { useState, useEffect } from 'react';
-import Modal from 'react-modal';
-import '../App.css';
+import React, { useState, useEffect } from "react";
+import Modal from "react-modal";
+import "../App.css";
 
-Modal.setAppElement('#root');
-
-const initialOrders = [
-  {
-    no: 1,
-    NIP: "123456",
-    Name: "Maya Wulandari",
-    Role: "ADMIN",
-    Organization: "DC1500",
-    Email: "maya.wlndr@example.com",
-    Action: ""
-  }
-];
+Modal.setAppElement("#root");
 
 const DataUser = () => {
- // Menyimpan data di local Orders
+  // Menyimpan data di local Orders
   const [orders, setOrders] = useState(() => {
-    const savedOrders = localStorage.getItem('orders');
+    const savedOrders = localStorage.getItem("orders");
     return savedOrders ? JSON.parse(savedOrders) : initialOrders;
   });
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -29,13 +17,13 @@ const DataUser = () => {
     Name: "",
     Role: "",
     Organization: "",
-    Email: ""
+    Email: "",
   });
   const [editingUser, setEditingUser] = useState(null);
   const [userToDelete, setUserToDelete] = useState(null);
 
   useEffect(() => {
-    localStorage.setItem('orders', JSON.stringify(orders));
+    localStorage.setItem("orders", JSON.stringify(orders));
   }, [orders]);
   // end menyimpan data
 
@@ -58,14 +46,14 @@ const DataUser = () => {
         ...prev,
         {
           no: prev.length + 1,
-          ...newUser
-        }
+          ...newUser,
+        },
       ]);
-    } 
+    }
     setIsModalOpen(false);
     setNewUser({ NIP: "", Name: "", Role: "", Organization: "", Email: "" });
   };
-  // end input    
+  // end input
 
   //Start Fungsi Edit
   const handleEditUser = (user) => {
@@ -75,24 +63,24 @@ const DataUser = () => {
       Name: user.Name,
       Role: user.Role,
       Organization: user.Organization,
-      Email: user.Email
+      Email: user.Email,
     });
     setIsModalOpen(true);
   };
   // End Fungsi Edit
 
- // Start Delete
+  // Start Delete
   const handleDeleteUser = (user) => {
     setUserToDelete(user);
     setIsDeleteModalOpen(true);
   };
 
   const confirmDeleteUser = () => {
-    setOrders((prev) => prev.filter(order => order.no !== userToDelete.no));
+    setOrders((prev) => prev.filter((order) => order.no !== userToDelete.no));
     setIsDeleteModalOpen(false);
     setUserToDelete(null);
   };
-// End Delete
+  // End Delete
 
   return (
     <div className="data-user">
@@ -102,7 +90,13 @@ const DataUser = () => {
           className="add-user-button"
           onClick={() => {
             setIsModalOpen(true);
-            setNewUser({ NIP: "", Name: "", Role: "", Organization: "", Email: "" });
+            setNewUser({
+              NIP: "",
+              Name: "",
+              Role: "",
+              Organization: "",
+              Email: "",
+            });
             setEditingUser(null);
           }}
         >
@@ -132,7 +126,9 @@ const DataUser = () => {
                 <td>{order.Organization}</td>
                 <td>{order.Email}</td>
                 <td>
-                  <button onClick={() => handleDeleteUser(order)}>Delete</button>
+                  <button onClick={() => handleDeleteUser(order)}>
+                    Delete
+                  </button>
                   <button onClick={() => handleEditUser(order)}>Edit</button>
                 </td>
               </tr>
@@ -197,8 +193,15 @@ const DataUser = () => {
           />
         </div>
         <div className="modal-actions">
-          <button onClick={() => setIsModalOpen(false)} className="modal-cancel">Cancel</button>
-          <button onClick={handleAddUser} className="modal-add">{editingUser ? "Save" : "Add"}</button>
+          <button
+            onClick={() => setIsModalOpen(false)}
+            className="modal-cancel"
+          >
+            Cancel
+          </button>
+          <button onClick={handleAddUser} className="modal-add">
+            {editingUser ? "Save" : "Add"}
+          </button>
         </div>
       </Modal>
       <Modal
@@ -209,10 +212,20 @@ const DataUser = () => {
         overlayClassName="delete-modal-overlay"
       >
         <h3>Delete Data User</h3>
-        <p>Are you sure you want to delete this data user? This action cannot be undone.</p>
+        <p>
+          Are you sure you want to delete this data user? This action cannot be
+          undone.
+        </p>
         <div className="modal-actions">
-          <button onClick={() => setIsDeleteModalOpen(false)} className="modal-cancel">Cancel</button>
-          <button onClick={confirmDeleteUser} className="modal-delete">Delete</button>
+          <button
+            onClick={() => setIsDeleteModalOpen(false)}
+            className="modal-cancel"
+          >
+            Cancel
+          </button>
+          <button onClick={confirmDeleteUser} className="modal-delete">
+            Delete
+          </button>
         </div>
       </Modal>
     </div>

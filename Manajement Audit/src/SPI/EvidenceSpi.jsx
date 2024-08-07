@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Modal from "react-modal";
+// import StatusTask from "../Commponents/StatusTask";
 import "../App.css";
 
 Modal.setAppElement("#root");
@@ -12,6 +13,7 @@ const EvidenceSpi = () => {
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [isTaskModalOpen, setIsTaskModalOpen] = useState(false);
   const [newUser, setNewUser] = useState({
     dataAndDocumentNeeded: "",
     phase: "",
@@ -27,6 +29,8 @@ const EvidenceSpi = () => {
 
   const [editingUser, setEditingUser] = useState(null);
   const [userToDelete, setUserToDelete] = useState(null);
+  const [taskUser, setTaskUser] = useState(null);
+  const [statusColors, setStatusColors] = useState({});
 
   useEffect(() => {
     localStorage.setItem("orders", JSON.stringify(orders));
@@ -68,20 +72,28 @@ const EvidenceSpi = () => {
 
   const confirmDeleteUser = () => {
     setOrders((prev) => {
-      // Hapus item yang terpilih
       const updatedOrders = prev.filter(
         (order) => order.no !== userToDelete.no
       );
 
-      // Urutkan ulang nomor urut
       return updatedOrders.map((order, index) => ({
         ...order,
-        no: index + 1, // Mengatur nomor urut baru
+        no: index + 1,
       }));
     });
 
     setIsDeleteModalOpen(false);
     setUserToDelete(null);
+  };
+
+  const handleTaskUser = (user) => {
+    setTaskUser(user);
+    setIsTaskModalOpen(true);
+
+    setStatusColors((prevColors) => ({
+      ...prevColors,
+      [user.no]: prevColors[user.no] === "#FF0000" ? "#FFFFFF" : "#FF0000",
+    }));
   };
 
   const resetNewUser = () => {
@@ -101,13 +113,13 @@ const EvidenceSpi = () => {
 
   return (
     <div className="data-user">
-      <h2>Data User</h2>
+      <h2>Data Evidence</h2>
       <div className="AddUser">
         <button
           className="add-user-button"
           onClick={() => {
             setIsModalOpen(true);
-            resetNewUser(); // Reset newUser when adding a new user
+            resetNewUser();
             setEditingUser(null);
           }}
         >
@@ -143,12 +155,13 @@ const EvidenceSpi = () => {
                 <td>{order.remarksByAuditor}</td>
                 <td>{order.auditee}</td>
                 <td>{order.auditor}</td>
-
+                <td>{order.statusComplete}</td>
                 <td>
                   <button onClick={() => handleDeleteUser(order)}>
                     Delete
                   </button>
                   <button onClick={() => handleEditUser(order)}>Edit</button>
+                  <button onClick={() => handleTaskUser(order)}>Task</button>
                 </td>
               </tr>
             ))}
@@ -258,7 +271,7 @@ const EvidenceSpi = () => {
         className="user-modal"
         overlayClassName="user-modal-overlay"
       >
-        <h3>Confirm Delete</h3>
+        <h3>Delete Data User</h3>
         <p>Are you sure you want to delete this user?</p>
         <div className="modal-actions">
           <button
@@ -267,7 +280,7 @@ const EvidenceSpi = () => {
           >
             Cancel
           </button>
-          <button onClick={confirmDeleteUser} className="modal-delete">
+          <button onClick={confirmDeleteUser} className="modal-add">
             Delete
           </button>
         </div>
