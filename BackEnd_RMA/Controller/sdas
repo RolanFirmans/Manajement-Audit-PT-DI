@@ -1,0 +1,71 @@
+// GET: Mengambil data dari employees dengan join tmaudusr
+// module.exports = (req, res) => {
+//     pool.query(
+//         `
+//         SELECT nik, nama, email
+//         FROM employees 
+//         INNER JOIN tmaudusr  ON n_audusr_usrnm = nik AND n_audusr_nm = nama AND n_audusr_email = email
+//         `,
+//         [],
+//         (dbError, dbResponse) => {
+//             if (dbError) {
+//                 console.error('Database error:', dbError);
+//                 res.status(500).send('Internal Server Error');
+//                 return;
+//             }
+
+//             res.json(dbResponse.rows.map(row => ({
+//                 nik: row.nik,
+//                 nama: row.nama,
+//                 email: row.email
+//             })));
+//         }
+//     );
+// }
+
+// POST: Menambahkan data ke tmaudusr
+// module.exports = (req, res) => {
+//     pool.query(
+//         `
+//         INSERT INTO tmaudusr (i_audusr, n_audusr_nm, n_audusr_usrnm, n_audusr_pswd, n_audusr_email, c_audusr_role, c_audusr_audr, i_entry, d_entry)
+//         VALUES ($1, $2, $3, %4, $5, $6, $7, %8, %9)
+//         `,  
+//         [i_audusr, n_audusr_nm, n_audusr_usrnm, n_audusr_pswd, n_audusr_email, c_audusr_role, c_audusr_audr, i_entry, d_entry],
+//         (dbError, dbResponse) => {
+//             if (dbError) {
+//                 console.error('Database error:', dbError);
+//                 res.status(500).send('Internal Server Error');
+//                 return;
+//             }
+
+//             res.status(201).send('Data added successfully');
+//         }
+//     );
+// }
+
+// module.exports = (req, res) => {
+//   const key = req.query.key;
+
+//   if (!key) {
+//     res.status.send('Missing key parameter');
+//     return;
+//   }
+
+//   const query = `
+//     SELECT A.n_audusr_usrnm, A.n_audusr_nm, A.c_audusr_role, 
+//            A.c_audusr_audr, B.c_org_cur, A.n_audusr_email
+//     FROM tmaudusr A
+//     JOIN employess B ON A.n_audusr_usrnm = B.i_emp
+//     WHERE A.i_audusr = ?
+//   `;
+
+//   connection.query(query, [key], (error, results) => {
+//     if (error) {
+//       console.error('Error executing the query:', error);
+//       res.send('Error executing the query');
+//       return;
+//     }
+//     res.json(results);
+//   });
+//   };
+

@@ -5,13 +5,9 @@ import "../App.css";
 Modal.setAppElement("#root");
 
 const DataUser = () => {
-  // Menyimpan data di local Orders
-  const [orders, setOrders] = useState(() => {
-    const savedOrders = localStorage.getItem("orders");
-    return savedOrders ? JSON.parse(savedOrders) : initialOrders;
-  });
+  const [orders, setOrders] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(true); 
   const [newUser, setNewUser] = useState({
     NIP: "",
     Name: "",
@@ -23,64 +19,91 @@ const DataUser = () => {
   const [userToDelete, setUserToDelete] = useState(null);
 
   useEffect(() => {
-    localStorage.setItem("orders", JSON.stringify(orders));
-  }, [orders]);
-  // end menyimpan data
+    const fetchOrders = async () => {
+      try {
+        const response = await fetch('http://localhost:3100/Admin/add-karyawan');
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        const result = await response.json();
+        setOrders(result);
+      } catch (error) {
+        console.error('Error:', error);
+      }
+    };
 
-  // star input data
+    fetchOrders();
+  }, []);
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setNewUser((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleAddUser = () => {
-    if (editingUser !== null) {
-      setOrders((prev) =>
-        prev.map((order) =>
-          order.no === editingUser.no ? { ...order, ...newUser } : order
-        )
-      );
-      setEditingUser(null);
-    } else {
+  const handleAddUser = async () => {
+    try {
+      const response = await fetch('http://localhost:3100/Admin/add-karyawan', {
+        method: 'POST',
+        headers: {
+          'Content-Type': '',
+        },
+        body: JSON.stringify(newUser),
+      });
+
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+
+      const result = await response.json();
       setOrders((prev) => [
         ...prev,
         {
-          no: prev.length + 1,
+          no: result.no, // Menggunakan nomor urut yang diberikan oleh backend
           ...newUser,
         },
       ]);
-    }
-    setIsModalOpen(false);
-    setNewUser({ NIP: "", Name: "", Role: "", Organization: "", Email: "" });
-  };
-  // end input
 
-  //Start Fungsi Edit
+      setIsModalOpen(false);
+      setNewUser({ NIP: "", Name: "", Role: "", Email: "" });
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  };
+
+
   const handleEditUser = (user) => {
     setEditingUser(user);
     setNewUser({
       NIP: user.NIP,
       Name: user.Name,
       Role: user.Role,
-      Organization: user.Organization,
       Email: user.Email,
     });
     setIsModalOpen(true);
   };
-  // End Fungsi Edit
 
-  // Start Delete
   const handleDeleteUser = (user) => {
     setUserToDelete(user);
     setIsDeleteModalOpen(true);
   };
 
-  const confirmDeleteUser = () => {
-    setOrders((prev) => prev.filter((order) => order.no !== userToDelete.no));
-    setIsDeleteModalOpen(false);
-    setUserToDelete(null);
+  const confirmDeleteUser = async () => {
+    try {
+      const response = await fetch(`http://localhost:3100/Admin/add-karyawan${userToDelete.no}`, {
+        method: 'DELETE',
+      });
+
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+
+      setOrders((prev) => prev.filter((order) => order.no !== userToDelete.no));
+      setIsDeleteModalOpen(false);
+      setUserToDelete(null);
+    } catch (error) {
+      console.error('Error:', error);
+    }
   };
-  // End Delete
 
   return (
     <div className="data-user">

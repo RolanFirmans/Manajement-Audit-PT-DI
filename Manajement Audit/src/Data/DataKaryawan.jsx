@@ -1,7 +1,7 @@
 {
     "info": "sukses",
     "pesan": "Data karyawan ditemukan",
-    "data": [
+    "data": 
       {
         "nik": "010004",
         "nama": "HENDAR RUSMAN",
