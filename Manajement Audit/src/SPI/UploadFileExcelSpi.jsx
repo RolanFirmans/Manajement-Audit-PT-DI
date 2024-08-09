@@ -11,6 +11,7 @@ const UploadFileExcelSpi = () => {
   const [showMessage, setShowMessage] = useState(false);
   const [uploadDate, setUploadDate] = useState("");
   const [selectedDate, setSelectedDate] = useState(new Date());
+  const [dragOver, setDragOver] = useState(false);
 
   const handleFileChange = (e) => {
     setFile(e.target.files[0]);
@@ -66,6 +67,26 @@ const UploadFileExcelSpi = () => {
     }
   };
 
+  const handleDragOver = (e) => {
+    e.preventDefault();
+    setDragOver(true);
+  };
+
+  const handleDragLeave = () => {
+    setDragOver(false);
+  };
+
+  const handleDrop = (e) => {
+    e.preventDefault();
+    setDragOver(false);
+    const droppedFile = e.dataTransfer.files[0];
+    if (droppedFile && hasExtension(droppedFile.name, [".xls", ".xlsx"])) {
+      setFile(droppedFile);
+    } else {
+      alert("Hanya file XLS atau XLSX (Excel) yang diijinkan.");
+    }
+  };
+
   return (
     <div>
       <header>
@@ -93,7 +114,18 @@ const UploadFileExcelSpi = () => {
             </a>
           </div>
         </fieldset>
-        <fieldset className="label_side" id="facnumber">
+        <fieldset
+          className="label_side"
+          id="facnumber"
+          onDragOver={handleDragOver}
+          onDragLeave={handleDragLeave}
+          onDrop={handleDrop}
+          style={{
+            border: dragOver ? "2px dashed #4CAF50" : "2px dashed #ddd",
+            padding: "20px",
+            textAlign: "center",
+          }}
+        >
           <label>Upload File</label>
           <div className="clearfix">
             <div className="input-group margin" style={{ width: "50%" }}>
@@ -103,7 +135,22 @@ const UploadFileExcelSpi = () => {
                 id="filepelamar"
                 className="form-control"
                 onChange={handleFileChange}
+                style={{ display: "none" }}
+                ref={(input) =>
+                  input && input.files.length && setFile(input.files[0])
+                }
               />
+              <div
+                onClick={() => document.getElementById("filepelamar").click()}
+                style={{
+                  cursor: "pointer",
+                  padding: "10px",
+                  borderRadius: "5px",
+                  backgroundColor: "#f1f1f1",
+                }}
+              >
+                {file ? file.name : "Drag & Drop file here or Click to select"}
+              </div>
               <span className="input-group-btn">
                 <input
                   type="submit"

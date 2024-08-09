@@ -192,6 +192,83 @@
   background-size: cover;
   background-position: center;
 }
+/* App.css */
+
+/* Styling untuk overlay modal */
+.Overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.75);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Styling untuk konten modal */
+.Modal {
+  position: relative;
+  width: 400px;
+  max-width: 90vw;
+  background: white;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Styling untuk tombol di dalam modal */
+.Modal button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 10px 20px;
+  margin: 10px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.Modal button:hover {
+  background-color: #0056b3;
+}
+
+/* Styling untuk tombol close */
+.Modal button.close {
+  background-color: #dc3545;
+}
+
+.Modal button.close:hover {
+  background-color: #c82333;
+}
+
+/* Styling untuk form di dalam modal */
+.Modal form {
+  display: flex;
+  flex-direction: column;
+}
+
+.Modal .form-group {
+  margin-bottom: 15px;
+}
+
+.Modal label {
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+
+.Modal input {
+  padding: 8px;
+  border: 1px solid #ced4da;
+  border-radius: 4px;
+  width: 100%;
+}
+
+.Modal h2 {
+  margin-top: 0;
+}
+
 /* lOOGIN END */
 
 /* STYLE ABOUTROLES SECTION */

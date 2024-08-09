@@ -38,6 +38,7 @@ export default function LoginSection() {
   return (
     <div className="ImgLogin">
       <img src={ImgLogin} alt="Login" />
+
       <Modal
         isOpen={modalIsOpen}
         onRequestClose={closeModal}
@@ -68,9 +69,6 @@ export default function LoginSection() {
             />
           </div>
           <button type="submit">Login</button>
-          <button type="button" onClick={closeModal}>
-            Close
-          </button>
         </form>
       </Modal>
     </div>

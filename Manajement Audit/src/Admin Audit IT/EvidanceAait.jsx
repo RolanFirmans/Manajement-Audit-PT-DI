@@ -34,10 +34,10 @@ const EvidanceAait = () => {
     localStorage.setItem("orders", JSON.stringify(orders));
   }, [orders]);
 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setNewUser((prev) => ({ ...prev, [name]: value }));
-  };
+  // const handleInputChange = (e) => {
+  //   const { name, value } = e.target;
+  //   setNewUser((prev) => ({ ...prev, [name]: value }));
+  // };
 
   // const handleAddUser = () => {
   //   if (editingUser) {
