@@ -1,10 +1,10 @@
-const pool = require('../utils/MAudit')
+const pool = require('../utils/dbaudit');
 
 module.exports = (req, res) => {
     pool.query(
         `
-        SELECT * FROM data_karyawan
-        ORDER BY id, nik, nama, organisasi, nama_organisasi, email, telepon, jabatan, nama_jabatan, nama_gelar, tanggal_lahir
+        SELECT nik, nama, organisasi, email FROM karyawan
+        ORDER BY nik
         `,
         [],
         (dbError, dbResponse) => {
@@ -13,6 +13,4 @@ module.exports = (req, res) => {
             res.json(dbResponse.rows);
         }
     );
-}
-
-
+};

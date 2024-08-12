@@ -1,8 +1,24 @@
-const express = require('express')
-const router = express.Router()
+// admin.js
+const express = require('express');
+const cors = require('cors');
+const { getKaryawan } = require('../Controller/adminControler.js'); 
+const { createDataKaryawan } = require('../Controller/adminControler.js'); // Sesuaikan dengan path yang benar
 
-const getAdmin = require('../Controller/adminC')
-router.get("/get", getAdmin)
-router.post("/add-karyawan", getAdmin)
+const router = express.Router();
 
-module.exports = router
+const corsOptions = {
+    origin: '*',
+    optionSuccessStatus: 200
+};
+
+// Middleware untuk CORS dan parsing JSON
+router.use(cors(corsOptions));
+router.use(express.json());
+router.use(express.urlencoded({ extended: true }));
+
+router.get('/karyawan', getKaryawan);
+
+// Definisikan route untuk menambahkan karyawan
+router.post('/add-karyawan', createDataKaryawan);
+
+module.exports = router;
