@@ -1,33 +1,39 @@
-import React, { useState, useEffect } from "react";
-import Modal from "react-modal";
-import "../App.css";
+import React, { useState, useEffect } from 'react';
+import Modal from 'react-modal';
+import DataKaryawan from './DataKaryawan'; // Import DataKaryawan component
 
-Modal.setAppElement("#root");
+Modal.setAppElement('#root');
 
 const DataUser = () => {
   const [orders, setOrders] = useState([]);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(true); 
+  const [isAddUserModalOpen, setIsAddUserModalOpen] = useState(false);
+  const [isKaryawanModalOpen, setIsKaryawanModalOpen] = useState(false);
+  const roleMapping = {
+    ADMIN: 1,
+    SPI: 2,
+    AUDITEE: 3,
+    AUDITOR: 4,
+    ADMIN_IT: 5,
+  };
+  
   const [newUser, setNewUser] = useState({
-    NIP: "",
-    Name: "",
-    Role: "",
-    Organization: "",
-    Email: "",
+    No: '',
+    NIK: '',
+    Name: '',
+    Role: '',
+    Organization: '',
+    Email: '',
   });
-  const [editingUser, setEditingUser] = useState(null);
-  const [userToDelete, setUserToDelete] = useState(null);
 
   useEffect(() => {
     const fetchOrders = async () => {
       try {
-        const response = await fetch('http://localhost:3100/Admin/add-karyawan');
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
-        }
+        const response = await fetch('http://localhost:3100/Admin/karyawan'); // Assuming this is the correct endpoint for fetching data
+        if (!response.ok) throw new Error('Network response was not ok');
         const result = await response.json();
+        console.log(result);
         setOrders(result);
-      } catch (error) {
+      } catch (error) { 
         console.error('Error:', error);
       }
     };
@@ -42,67 +48,83 @@ const DataUser = () => {
 
   const handleAddUser = async () => {
     try {
+      console.log('Sending data:', {
+        n_audusr_usrnm: newUser.NIK,
+        n_audusr_nm: newUser.Name,
+        n_audusr_pswd: 'default_password',
+        i_audusr_email: newUser.Email,
+        c_audusr_role: roleMapping[newUser.Role], 
+        c_audusr_audr: newUser.Organization, 
+        i_entry: 'some_entry_user',
+        d_entry: new Date().toISOString()
+      });
+  
       const response = await fetch('http://localhost:3100/Admin/add-karyawan', {
         method: 'POST',
-        headers: {
-          'Content-Type': '',
-        },
-        body: JSON.stringify(newUser),
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          n_audusr_usrnm: newUser.NIK,
+          n_audusr_nm: newUser.Name,
+          n_audusr_pswd: 'default_password',
+          i_audusr_email: newUser.Email,
+          c_audusr_role: roleMapping[newUser.Role], 
+          c_audusr_audr: newUser.Organization, 
+          i_entry: 'some_entry_user',
+          d_entry: new Date().toISOString()
+        }),
       });
-
+  
       if (!response.ok) {
-        throw new Error('Network response was not ok');
+        const errorData = await response.text(); // Ambil pesan error dari server
+        throw new Error(`Network response was not ok: ${errorData}`);
       }
-
+  
       const result = await response.json();
       setOrders((prev) => [
         ...prev,
-        {
-          no: result.no, // Menggunakan nomor urut yang diberikan oleh backend
-          ...newUser,
-        },
+        { ...newUser, No: result.i_audusr, Role: roleMapping[newUser.Role] },
       ]);
-
-      setIsModalOpen(false);
-      setNewUser({ NIP: "", Name: "", Role: "", Email: "" });
+      setIsAddUserModalOpen(false);
+      setNewUser({ No: '', NIK: '', Name: '', Role: '', Organization: '', Email: '' });
     } catch (error) {
-      console.error('Error:', error);
+      console.error('Error adding user:', error);
     }
   };
-
-
+  
+  
+  
+  
   const handleEditUser = (user) => {
-    setEditingUser(user);
-    setNewUser({
-      NIP: user.NIP,
-      Name: user.Name,
-      Role: user.Role,
-      Email: user.Email,
-    });
-    setIsModalOpen(true);
+    setNewUser(user);
+    setIsAddUserModalOpen(true);
   };
 
-  const handleDeleteUser = (user) => {
-    setUserToDelete(user);
-    setIsDeleteModalOpen(true);
-  };
-
-  const confirmDeleteUser = async () => {
+  const handleDeleteUser = async (user) => {
     try {
-      const response = await fetch(`http://localhost:3100/Admin/add-karyawan${userToDelete.no}`, {
+      const response = await fetch(`http://localhost:3100/Admin/delete-karyawan/${user.No}`, {
         method: 'DELETE',
       });
-
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
-      }
-
-      setOrders((prev) => prev.filter((order) => order.no !== userToDelete.no));
-      setIsDeleteModalOpen(false);
-      setUserToDelete(null);
+      if (!response.ok) throw new Error('Network response was not ok');
+      setOrders((prev) => prev.filter((order) => order.No !== user.No));
     } catch (error) {
       console.error('Error:', error);
     }
+  };
+
+  const openKaryawanModal = () => {
+    setIsAddUserModalOpen(false);
+    setIsKaryawanModalOpen(true);
+  };
+
+  const handleKaryawanSelect = (karyawan) => {
+    setNewUser({
+      No: karyawan.no,
+      NIK: karyawan.nik,
+      Name: karyawan.nama,
+      Organization: karyawan.organisasi,
+      Email: karyawan.email,
+    });
+    setIsKaryawanModalOpen(false);
   };
 
   return (
@@ -111,17 +133,7 @@ const DataUser = () => {
       <div className="AddUser">
         <button
           className="add-user-button"
-          onClick={() => {
-            setIsModalOpen(true);
-            setNewUser({
-              NIP: "",
-              Name: "",
-              Role: "",
-              Organization: "",
-              Email: "",
-            });
-            setEditingUser(null);
-          }}
+          onClick={() => setIsAddUserModalOpen(true)}
         >
           Add User
         </button>
@@ -131,7 +143,7 @@ const DataUser = () => {
           <thead>
             <tr>
               <th>No</th>
-              <th>NIP</th>
+              <th>NIK</th>
               <th>Name</th>
               <th>Role</th>
               <th>Organization</th>
@@ -141,17 +153,15 @@ const DataUser = () => {
           </thead>
           <tbody>
             {orders.map((order) => (
-              <tr key={order.no}>
-                <td>{order.no}</td>
-                <td>{order.NIP}</td>
+              <tr key={order.No}>
+                <td>{order.No}</td>
+                <td>{order.NIK}</td>
                 <td>{order.Name}</td>
                 <td>{order.Role}</td>
                 <td>{order.Organization}</td>
                 <td>{order.Email}</td>
                 <td>
-                  <button onClick={() => handleDeleteUser(order)}>
-                    Delete
-                  </button>
+                  <button onClick={() => handleDeleteUser(order)}>Delete</button>
                   <button onClick={() => handleEditUser(order)}>Edit</button>
                 </td>
               </tr>
@@ -159,21 +169,23 @@ const DataUser = () => {
           </tbody>
         </table>
       </div>
+      {/* Add User Modal */}
       <Modal
-        isOpen={isModalOpen}
-        onRequestClose={() => setIsModalOpen(false)}
+        isOpen={isAddUserModalOpen}
+        onRequestClose={() => setIsAddUserModalOpen(false)}
         contentLabel="Add User Modal"
         className="user-modal"
         overlayClassName="user-modal-overlay"
       >
-        <h3>{editingUser ? "Edit Data User" : "Add Data User"}</h3>
+        <h3>Add Data User</h3>
         <div className="modal-content">
-          <label>NIP</label>
+          <label>NIK</label>
           <input
             type="text"
-            name="NIP"
-            value={newUser.NIP}
-            onChange={handleInputChange}
+            name="NIK"
+            value={newUser.NIK}
+            onClick={openKaryawanModal}
+            readOnly
             className="modal-input"
           />
           <label>Name</label>
@@ -216,40 +228,22 @@ const DataUser = () => {
           />
         </div>
         <div className="modal-actions">
-          <button
-            onClick={() => setIsModalOpen(false)}
-            className="modal-cancel"
-          >
-            Cancel
-          </button>
-          <button onClick={handleAddUser} className="modal-add">
-            {editingUser ? "Save" : "Add"}
-          </button>
+          <button onClick={() => setIsAddUserModalOpen(false)} className="modal-cancel">Cancel</button>
+          <button onClick={handleAddUser} className="modal-add">Add</button>
         </div>
       </Modal>
+
+      {/* Data Karyawan Modal */}
       <Modal
-        isOpen={isDeleteModalOpen}
-        onRequestClose={() => setIsDeleteModalOpen(false)}
-        contentLabel="Delete Confirmation Modal"
-        className="delete-modal"
-        overlayClassName="delete-modal-overlay"
+        isOpen={isKaryawanModalOpen}
+        onRequestClose={() => setIsKaryawanModalOpen(false)}
+        contentLabel="Data Karyawan Modal"
+        className="karyawan-modal"
+        overlayClassName="karyawan-modal-overlay"
       >
-        <h3>Delete Data User</h3>
-        <p>
-          Are you sure you want to delete this data user? This action cannot be
-          undone.
-        </p>
-        <div className="modal-actions">
-          <button
-            onClick={() => setIsDeleteModalOpen(false)}
-            className="modal-cancel"
-          >
-            Cancel
-          </button>
-          <button onClick={confirmDeleteUser} className="modal-delete">
-            Delete
-          </button>
-        </div>
+        <h3>Data Karyawan</h3>
+        <DataKaryawan onSelectKaryawan={handleKaryawanSelect} />
+        <button onClick={() => setIsKaryawanModalOpen(false)} className="modal-cancel">Close</button>
       </Modal>
     </div>
   );

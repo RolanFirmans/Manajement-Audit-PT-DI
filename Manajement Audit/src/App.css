@@ -756,3 +756,72 @@ button {
 /* START AUDITOR */
 
 /* END Status Task */
+
+/* START TAMPILAN DATA KARYAWAN */
+/* CSS for DataKaryawan Component */
+
+.table-container {
+  padding: 20px;
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.table-container table {
+  width: 100%;
+  border-collapse: collapse;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.table-container th, .table-container td {
+  padding: 12px 15px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+
+.table-container th {
+  background-color: #f4f4f4;
+  font-weight: bold;
+  text-transform: uppercase;
+  color: #333;
+}
+
+.table-container tr:hover {
+  background-color: #f1f1f1;
+}
+
+.table-container td {
+  position: relative;
+  cursor: pointer;
+}
+
+.table-container td:first-child, .table-container th:first-child {
+  text-align: center;
+}
+
+.table-container td:hover:after {
+  content: 'Select';
+  position: absolute;
+  right: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: #007bff;
+  color: #fff;
+  padding: 5px 10px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: bold;
+  display: inline-block;
+  cursor: pointer;
+}
+
+.table-container td:hover:after {
+  opacity: 1;
+  transition: opacity 0.3s ease-in-out;
+}
+
+.table-container td::after {
+  opacity: 0;
+}
+
+/* END TAMPILAN DATA KARYAWAN */
