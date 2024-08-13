@@ -9,12 +9,13 @@ const DataUser = () => {
   const [data, setData] = useState([]);
   const [isAddUserModalOpen, setIsAddUserModalOpen] = useState(false);
   const [isKaryawanModalOpen, setIsKaryawanModalOpen] = useState(false);
+
   const roleMapping = {
-    1: 'Admin',
-    2: 'SPI',
-    3: 'Auditee',
-    4: 'Auditor',
-    5: 'Admin IT'
+    ADMIN: 1,
+    SPI: 2,
+    AUDITEE: 3,
+    AUDITOR: 4,
+    ADMIN_IT: 5
   };
 
   const [newUser, setNewUser] = useState({
