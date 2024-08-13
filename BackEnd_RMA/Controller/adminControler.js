@@ -78,15 +78,6 @@ const deleteKaryawan = (req, res) => {
 };
 
 
-
-
-
-
-
-
-
-
-
 // Endpoint PUT untuk UPDATE data
 const updateKaryawan = (req, res) => {
     const { n_audusr_usrnm } = req.params;
