@@ -36,7 +36,7 @@ const DataUser = () => {
         
         // Pemetaan data dari backend ke frontend
         const mappedOrders = result.map((item, index) => ({
-          No: index + 1,
+          No: item.i_audusr+1,
           NIK: item.n_audusr_usrnm,
           Name: item.n_audusr_nm,
           Role: item.c_audusr_role,
@@ -62,6 +62,7 @@ const DataUser = () => {
   const handleAddUser = async () => {
     try {
       console.log('Sending data:', {
+        i_audusr: newUser.No,
         n_audusr_usrnm: newUser.NIK,
         n_audusr_nm: newUser.Name,
         n_audusr_pswd: 'default_password',
@@ -76,6 +77,7 @@ const DataUser = () => {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
+          i_audusr: newUser.No,
           n_audusr_usrnm: newUser.NIK,
           n_audusr_nm: newUser.Name,
           n_audusr_pswd: 'default_password',
@@ -222,7 +224,7 @@ const handleDeleteUser = async (id) => {
           <tbody>
           {orders.map((order, index) => (
                 <tr key={`${order.NIK}-${index}`}> {/* Kombinasikan NIK dan index untuk membuat kunci unik */}
-                    <td>{order.i_audusr}</td>
+                    <td>{order.No}</td>
                     <td>{order.NIK}</td>
                     <td>{order.Name}</td>
                     <td>{order.Role}</td>
