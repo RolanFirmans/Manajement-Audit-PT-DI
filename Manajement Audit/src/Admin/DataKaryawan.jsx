@@ -7,12 +7,23 @@ const DataKaryawan = ({ onSelectKaryawan }) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch('http://localhost:3100/Data/');
-        if (!response.ok) throw new Error('Network response was not ok');
+        const response = await fetch(`${import.meta.env.VITE_HELP_DESK}/Data/`);
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
         const result = await response.json();
-        setDataKaryawan(result);
+        
+        // Memastikan result.data adalah array
+        if (Array.isArray(result.data)) {
+          setDataKaryawan(result.data);
+        } else {
+          setDataKaryawan([]);
+          console.error('Expected array but got:', result.data);
+        }
+
+        console.log('API response:', result);
       } catch (error) {
-        console.error('Error:', error);
+        console.error('Error fetching data:', error);
       }
     };
 
@@ -33,7 +44,7 @@ const DataKaryawan = ({ onSelectKaryawan }) => {
         <tbody>
           {dataKaryawan.length === 0 ? (
             <tr>
-              <td colSpan="4">No data available</td>
+              <td colSpan="5">No data available</td>
             </tr>
           ) : (
             dataKaryawan.map((karyawan, index) => (

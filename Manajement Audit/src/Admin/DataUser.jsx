@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Modal from 'react-modal';
 import DataKaryawan from './DataKaryawan'; // Import DataKaryawan component
+import axios from 'axios';
 
 Modal.setAppElement('#root');
 
@@ -9,14 +10,30 @@ const DataUser = () => {
   const [data, setData] = useState([]);
   const [isAddUserModalOpen, setIsAddUserModalOpen] = useState(false);
   const [isKaryawanModalOpen, setIsKaryawanModalOpen] = useState(false);
-
-  const roleMapping = {
-    ADMIN: 1,
-    SPI: 2,
-    AUDITEE: 3,
-    AUDITOR: 4,
-    ADMIN_IT: 5
+  const [iAudusr, setIAudusr] = useState('null');
+  const [message, setMessage] = useState('');
+  const getRoleValue = (roleLabel) => {
+    switch (roleLabel) {
+      case 'ADMIN': return 0;
+      case 'SPI': return 1;
+      case 'AUDITEE': return 2;
+      case 'AUDITOR': return 3;
+      case 'ADMIN_IT': return 4;
+      default: return null;
+    }
   };
+  const getRoleLabel = (roleValue) => {
+    switch (parseInt(roleValue)) {
+      case 0: return 'ADMIN';
+      case 1: return 'SPI';
+      case 2: return 'AUDITEE';
+      case 3: return 'AUDITOR';
+      case 4: return 'ADMIN_IT';
+      default: return 'null';
+    }
+  };
+
+
 
   const [newUser, setNewUser] = useState({
     No: '',
@@ -27,95 +44,96 @@ const DataUser = () => {
     Email: '',
   });
 
-  useEffect(() => {
-    const fetchOrders = async () => {
-      try {
-        const response = await fetch('http://localhost:3100/Admin/karyawan');
-        if (!response.ok) throw new Error('Network response was not ok');
-        const result = await response.json();
-        
-        // Pemetaan data dari backend ke frontend
-        const mappedOrders = result.map((item, index) => ({
-          No: item.i_audusr+1,
-          NIK: item.n_audusr_usrnm,
-          Name: item.n_audusr_nm,
-          Role: item.c_audusr_role,
-          Organization: item.c_audusr_audr,
-          Email: item.i_audusr_email
-        }));
-  
-        setOrders(mappedOrders);
-      } catch (error) {
-        console.error('Error:', error);
+  const fetchKaryawan = async () => {
+    try {
+      const response = await fetch(`${import.meta.env.VITE_HELP_DESK}/Admin/karyawan`);
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
       }
-    };
-  
-    fetchOrders();
+      const result = await response.json();
+
+      if (result.payload === 'Data tidak ditemukan') {
+        console.error('Data tidak ditemukan');
+        return;
+      }
+      
+      const mappedKaryawan = result.payload.map((item, index) => ({
+        No: index + 1,
+        NIK: item.n_audusr_usrnm,
+        Name: item.n_audusr_nm,
+        Role: getRoleLabel(item.role),
+        Organization: item.organisasi,
+        Email: item.i_audusr_email
+      }));
+
+      setOrders(mappedKaryawan);
+    } catch (error) {
+      console.error('Error fetching data:', error.message);
+    }
+  };
+
+  useEffect(() => {
+    fetchKaryawan();
   }, []);
   
-
+  const handleAddUser = async () => {
+    try {
+      const roleValue = getRoleValue(newUser.Role);
+      if (roleValue === null) {
+        throw new Error('Peran yang dipilih tidak valid');
+      }
+  
+      const bodyData = {
+        key: newUser.NIK,
+        key1: newUser.Name,
+        key2: roleValue,
+        key3: newUser.Email
+      };
+  
+      console.log('Data yang dikirim:', bodyData);
+  
+      const response = await fetch(`${import.meta.env.VITE_HELP_DESK}/Admin/add-karyawan`, {
+        method: 'POST',
+        headers: { 
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(bodyData),
+      });
+  
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.details || 'Terjadi kesalahan yang tidak diketahui');
+      }
+  
+      const responseData = await response.json();
+      console.log('Data respon:', responseData);
+  
+      alert('Pengguna berhasil ditambahkan');
+      setIsAddUserModalOpen(false);
+      fetchKaryawan(); // Refresh daftar karyawan
+  
+    } catch (error) {
+      console.error('Error menambahkan pengguna:', error);
+      alert(`Error menambahkan pengguna: ${error.message}`);
+    }
+  };
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setNewUser((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleAddUser = async () => {
-    try {
-      console.log('Sending data:', {
-        i_audusr: newUser.No,
-        n_audusr_usrnm: newUser.NIK,
-        n_audusr_nm: newUser.Name,
-        n_audusr_pswd: 'default_password',
-        i_audusr_email: newUser.Email,
-        c_audusr_role: roleMapping[newUser.Role],
-        c_audusr_audr: newUser.Organization,
-        i_entry: 'some_entry_user',
-        d_entry: new Date().toISOString(),
-      });
-
-      const response = await fetch('http://localhost:3100/Admin/add-karyawan', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          i_audusr: newUser.No,
-          n_audusr_usrnm: newUser.NIK,
-          n_audusr_nm: newUser.Name,
-          n_audusr_pswd: 'default_password',
-          i_audusr_email: newUser.Email,
-          c_audusr_role: roleMapping[newUser.Role],
-          c_audusr_audr: newUser.Organization,
-          i_entry: 'some_entry_user',
-          d_entry: new Date().toISOString(),
-        }),
-      });
-
-      if (!response.ok) {
-        const errorData = await response.text();
-        throw new Error(`Network response was not ok: ${errorData}`);
-      }
-
-      setOrders((prev) => [
-        ...prev,
-        { ...newUser, No: newUser.NIK, Role: roleMapping[newUser.Role] },
-      ]);
-      setIsAddUserModalOpen(false);
-      setNewUser({ No: '', NIK: '', Name: '', Role: '', Organization: '', Email: '' });
-    } catch (error) {
-      console.error('Error adding user:', error);
-    }
-  };
-
+  
   const handleUpdateUser = async () => {
     try {
-        const response = await fetch(`http://localhost:3100/Admin/update-karyawan/n_audusr_usrnm${newUser.NIK}`, {
+        const response = await fetch(`${import.meta.env.VITE_HELP_DESK}/Admin/update-karyawan/n_audusr_usrnm${newUser.NIK}`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
                 n_audusr_nm: newUser.Name,
                 n_audusr_pswd: 'default_password',
                 i_audusr_email: newUser.Email,
-                c_audusr_role: roleMapping[newUser.Role],
-                c_audusr_audr: newUser.Organization,
+                c_audusr_role: newUser.Role,
+                organasasi: newUser.Organization,
             }),
         });
 
@@ -132,55 +150,31 @@ const DataUser = () => {
     }
 };
 
+
+
 const handleEditUser = (user) => {
     setNewUser(user);
     setIsAddUserModalOpen(true);
 };
 
-
 // Fungsi untuk menghapus user
 const handleDeleteUser = async (id) => {
-
-    // Pastikan id adalah angka
-    const numericId = Number(id);
-    
-    if (isNaN(numericId)) {
-        console.error('Invalid ID format');
-        return;
+  try {
+    const response = await axios.delete(`${import.meta.env.VITE_HELP_DESK}/Admin/delete-karyawan/${id}`);
+    if (response.status === 200) {
+      console.log('User berhasil dihapus');
+      // Update state untuk menghapus user dari daftar
+      setOrders(prevOrders => prevOrders.filter(order => order.id !== id));
+    } else {
+      console.error('Gagal menghapus user:', response.data.message);
     }
-
-    try {
-        const response = await fetch(`http://localhost:3100/Admin/delete-karyawan/:i_audusr${numericId}`, {
-            method: 'DELETE',
-        });
-
-        if (response.headers.get('content-type')?.includes('application/json')) {
-            const data = await response.json();
-            console.log('Response:', data);
-
-            if (response.ok) {
-                console.log('User deleted successfully');
-            } else {
-                throw new Error(data.error || 'Error');
-            }
-        } else {
-            const text = await response.text();
-            console.error('Unexpected response:', text);
-            throw new Error('Unexpected response format.');
-        }
-    } catch (error) {
-        console.error('Error:', error);
-    }
+  } catch (error) {
+    console.error('Error saat menghapus user:', error);
+  }
 };
 
+
 // Panggil handleDeleteUser dengan ID yang sesuai
-
-
-
-
-
-  
-
   const openKaryawanModal = () => {
     setIsAddUserModalOpen(false);
     setIsKaryawanModalOpen(true);
@@ -222,19 +216,19 @@ const handleDeleteUser = async (id) => {
             </tr>
           </thead>
           <tbody>
-          {orders.map((order, index) => (
-                <tr key={`${order.NIK}-${index}`}> {/* Kombinasikan NIK dan index untuk membuat kunci unik */}
-                    <td>{order.No}</td>
-                    <td>{order.NIK}</td>
-                    <td>{order.Name}</td>
-                    <td>{order.Role}</td>
-                    <td>{order.Organization}</td>
-                    <td>{order.Email}</td>
-                    <td>
-                        <button onClick={() => handleDeleteUser(order.i_audusr)}>Delete</button>
-                        <button onClick={() => handleEditUser(order)}>Edit</button>
-                    </td>
-                </tr>
+            {orders.map((order, index) => (
+              <tr key={`${order.NIK}-${index}`}>
+                <td>{order.No}</td>
+                <td>{order.NIK}</td>
+                <td>{order.Name}</td>
+                <td>{order.Role}</td>
+                <td>{order.Organization}</td>
+                <td>{order.Email}</td>
+                <td>
+                  <button onClick={() => handleDeleteUser(order.id)}>Delete</button>
+                  <button onClick={() => handleEditUser(order)}>Edit</button>
+                </td>
+              </tr>
             ))}
           </tbody>
         </table>
@@ -268,26 +262,26 @@ const handleDeleteUser = async (id) => {
           />
           <label>Role</label>
           <select
-            name="Role"
-            value={newUser.Role}
-            onChange={handleInputChange}
-            className="modal-select"
-          >
-            <option value="">Select Role</option>
-            <option value="ADMIN">Admin</option>
-            <option value="SPI">SPI</option>
-            <option value="AUDITEE">Auditee</option>
-            <option value="AUDITOR">Auditor</option>
-            <option value="ADMIN_IT">Admin IT</option>
-          </select>
-          <label>Organization</label>
+              name="Role"
+              value={newUser.Role}
+              onChange={handleInputChange}
+              className="modal-select"
+            >
+              <option value="">Pilih Peran</option>
+              <option value="ADMIN">Admin</option>
+              <option value="SPI">SPI</option>
+              <option value="AUDITEE">Auditee</option>
+              <option value="AUDITOR">Auditor</option>
+              <option value="ADMIN_IT">Admin IT</option>
+            </select>
+          {/* <label>Organization</label>
           <input
             type="text"
             name="Organization"
             value={newUser.Organization}
             onChange={handleInputChange}
             className="modal-input"
-          />
+          /> */}
           <label>Email</label>
           <input
             type="email"

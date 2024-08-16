@@ -10,7 +10,7 @@ import AdminAuditIT from "./Admin Audit IT/AdminAuditIT.jsx";
 import SPI from "./SPI/SPI.jsx";
 import Auditor from "./Auditor/Auditor.jsx";
 import Auditee from "./Auditee/Auditee.jsx";
-import DataUser from "./Admin/DataKaryawan.jsx";  
+import DataKaryawan from "./Admin/DataKaryawan.jsx";  
 
 function App() {
   return (
@@ -25,7 +25,7 @@ function App() {
         <Route path="SPI" element={<SPI />} />
         <Route path="Auditor" element={<Auditor />} />
         <Route path="Auditee" element={<Auditee />} />
-        <Route path="DataUser" element={<DataUser />} />
+        <Route path="DataKaryawan" element={<DataKaryawan />} />
 
        
       </Routes>

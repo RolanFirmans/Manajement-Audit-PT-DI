@@ -573,7 +573,7 @@ button {
 
 .user-modal {
   position: absolute;
-  top: 50%;
+  top: 60%;
   left: 50%;
   right: auto;
   bottom: auto;
@@ -761,10 +761,17 @@ button {
 /* CSS for DataKaryawan Component */
 
 .table-container {
+  position: absolute;
+  top: 90%;
+  left: 45%;
+  right: auto;
+  bottom: auto;
+  transform: translate(-50%, -50%);
+  background: #fff;
   padding: 20px;
-  width: 100%;
-  max-width: 800px;
-  margin: 0 auto;
+  border-radius: 8px;
+  width: 400px;
+  max-width: 90%;
 }
 
 .table-container table {
@@ -775,8 +782,8 @@ button {
 
 .table-container th, .table-container td {
   padding: 12px 15px;
-  text-align: left;
-  border-bottom: 1px solid #ddd;
+  text-align: justify;
+  
 }
 
 .table-container th {
