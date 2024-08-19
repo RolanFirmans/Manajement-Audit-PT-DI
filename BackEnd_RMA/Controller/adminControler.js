@@ -54,7 +54,7 @@ const getKaryawan = async (req, res) => {
     const result = await pool.query(`
       SELECT t.n_audusr_usrnm, t.n_audusr_nm, t.c_audusr_audr AS role, t.i_audusr_email, e.organisasi
       FROM TMAUDUSR t
-      LEFT JOIN karyawan e ON t.n_audusr_usrnm = e.nik
+      JOIN karyawan e ON t.n_audusr_usrnm = e.nik
     `);
 
     if (result.rows.length === 0) {
@@ -68,49 +68,82 @@ const getKaryawan = async (req, res) => {
   }
 };
 
-// Endpoint DELETE untuk DELETE data
-const deleteKaryawan = async (req, res, next) => {
-  console.log('Rute delete dipanggil, ID:', req.params.id);
-  next();
+// Endpoint DELETE untuk DELETE datana
+const deleteKaryawan = async (req, res) => {
+  const nik = req.params.nik;
+  console.log('Received delete request for NIK:', nik);
 
-  const query = 'DELETE FROM TMAUDUSR WHERE I_AUDUSR = $1';
+  if (!nik) {
+    return res.status(400).json({ error: 'NIK tidak valid' });
+  }
+
+  const query = 'DELETE FROM TMAUDUSR WHERE n_audusr_usrnm = $1 RETURNING *';
 
   try {
-    const result = await pool.query(query, [iAudusr]);
+    const result = await pool.query(query, [nik]);
+    
     if (result.rowCount === 0) {
-      return res.status(404).json({ message: 'Data tidak ditemukan' });
+      return res.status(404).json({ message: 'Data karyawan tidak ditemukan' });
     }
-    res.status(200).json({ message: 'Data karyawan berhasil dihapus' });
+
+    const deletedKaryawan = result.rows[0];
+    res.status(200).json({ 
+      message: 'Data karyawan berhasil dihapus',
+      data: deletedKaryawan
+    });
   } catch (error) {
-    console.error('Error deleting karyawan:', error);
-    res.status(500).json({ error: 'Terjadi kesalahan saat menghapus data' });
+    console.error('Error saat menghapus karyawan:', error);
+    res.status(500).json({ error: 'Terjadi kesalahan saat menghapus data karyawan' });
   }
 };
 
-// Endpoint PUT untuk UPDATE data
-const updateKaryawan = (req, res) => {
-    const { n_audusr_usrnm } = req.params;
-    const { n_audusr_nm, n_audusr_pswd, i_audusr_email, c_audusr_role, c_audusr_audr } = req.body;
+// Endpoint PUT untuk UPDATE data masih error 
+const updateKaryawan = async (req, res) => {
+  const { key1 } = req.params; // N_AUDUSR_USRNM
+  const { c_audusr_role, n_audusr_nm, i_audusr_email } = req.body;
 
-    const query = `
-    UPDATE tmaudusr
-    SET n_audusr_nm = $1, n_audusr_pswd = $2, i_audusr_email = $3, c_audusr_role = $4, c_audusr_audr = $5
-    WHERE n_audusr_usrnm = $6;
+  console.log('Data yang diterima untuk update:', { key1, c_audusr_role, n_audusr_nm, i_audusr_email });
+
+  // Pengecekan data yang diperlukan
+  if (!key1 || !c_audusr_role || !n_audusr_nm || !i_audusr_email) {
+    return res.status(400).json({ error: 'Semua field harus diisi' });
+  }
+
+  const client = await pool.connect();
+
+  try {
+    await client.query('BEGIN');
+
+    const roleInt = parseInt(c_audusr_role, 10);
+
+    if (isNaN(roleInt) || roleInt < 0 || roleInt > 4) {
+      throw new Error(`Role tidak valid: ${c_audusr_role}`);
+    }
+
+    const updateQuery = `
+      UPDATE TMAUDUSR 
+      SET N_AUDUSR_NM = $1,
+          C_AUDUSR_ROLE = $2,
+          I_AUDUSR_EMAIL = $3
+      WHERE N_AUDUSR_USRNM = $4
     `;
 
-    const values = [n_audusr_nm, n_audusr_pswd, i_audusr_email, c_audusr_role, c_audusr_audr, n_audusr_usrnm];
+    const result = await client.query(updateQuery, [n_audusr_nm, roleInt, i_audusr_email, key1]);
 
-    pool.query(query, values, (error, result) => {
-        if (error) {
-            console.error('Query error:', error);
-            return res.status(500).json({ error: 'Terjadi kesalahan saat mengupdate data.' });
-        }
-        console.log('User updated successfully');
-        res.status(200).send('User updated successfully');
-    });
+    if (result.rowCount === 0) {
+      throw new Error('Pengguna tidak ditemukan');
+    }
+
+    await client.query('COMMIT');
+    res.json({ message: 'Data pengguna berhasil diperbarui' });
+  } catch (err) {
+    await client.query('ROLLBACK');
+    console.error('Error in updateKaryawan:', err);
+    res.status(400).json({ error: err.message });
+  } finally {
+    client.release();
+  }
 };
-
-
 module.exports = {
     createDataKaryawan,
     getKaryawan,

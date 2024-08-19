@@ -3,13 +3,20 @@ const pool = require('../utils/dbaudit');
 module.exports = (req, res) => {
     pool.query(
         `
-        SELECT * FROM karyawan a
-        join tmaudusr b
-        on b.n_audusr_usrnm = a.nik
-        where 
-        (b.c_audusr_role in (0,2, 3) AND substring(a.organisasi, 1, 2) = 'IT') OR 
-        (b.c_audusr_role in (1) AND substring(a.organisasi, 1, 2) = 'PI')
+      SELECT * 
+        FROM karyawan  
         `,
+        // JOIN tmaudusr b
+        // ON b.n_audusr_usrnm = a.nik
+        // WHERE 
+        // (
+        //     (b.c_audusr_role IN (0, 2, 3) AND substring(a.organisasi, 1, 2) = 'IT')
+        // ) 
+        // OR 
+        // (
+        //     (b.c_audusr_role IN (1) AND substring(a.organisasi, 1, 2) = 'PI')
+        // );
+
         (dbError, dbResponse) => {
             if (dbError) {
                 console.error('Database error:', dbError);
