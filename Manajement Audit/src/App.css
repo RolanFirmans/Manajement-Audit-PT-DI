@@ -763,15 +763,13 @@ button {
 .table-container {
   position: absolute;
   top: 90%;
-  left: 45%;
+  left: 20%;
   right: auto;
-  bottom: auto;
-  transform: translate(-50%, -50%);
   background: #fff;
   padding: 20px;
   border-radius: 8px;
-  width: 400px;
-  max-width: 90%;
+  width: 500px;
+  max-width: 100%;
 }
 
 .table-container table {
@@ -781,8 +779,8 @@ button {
 }
 
 .table-container th, .table-container td {
-  padding: 12px 15px;
-  text-align: justify;
+  padding: 20px 40px;
+  text-align: left;
   
 }
 

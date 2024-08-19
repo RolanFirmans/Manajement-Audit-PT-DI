@@ -2,16 +2,15 @@ import React, { useState, useEffect } from 'react';
 import Modal from 'react-modal';
 import DataKaryawan from './DataKaryawan'; // Import DataKaryawan component
 import axios from 'axios';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 Modal.setAppElement('#root');
 
 const DataUser = () => {
   const [orders, setOrders] = useState([]);
-  const [data, setData] = useState([]);
   const [isAddUserModalOpen, setIsAddUserModalOpen] = useState(false);
   const [isKaryawanModalOpen, setIsKaryawanModalOpen] = useState(false);
-  const [iAudusr, setIAudusr] = useState('null');
-  const [message, setMessage] = useState('');
   const getRoleValue = (roleLabel) => {
     switch (roleLabel) {
       case 'ADMIN': return 0;
@@ -32,8 +31,6 @@ const DataUser = () => {
       default: return 'null';
     }
   };
-
-
 
   const [newUser, setNewUser] = useState({
     No: '',
@@ -125,31 +122,28 @@ const DataUser = () => {
   
   const handleUpdateUser = async () => {
     try {
-        const response = await fetch(`${import.meta.env.VITE_HELP_DESK}/Admin/update-karyawan/n_audusr_usrnm${newUser.NIK}`, {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                n_audusr_nm: newUser.Name,
-                n_audusr_pswd: 'default_password',
-                i_audusr_email: newUser.Email,
-                c_audusr_role: newUser.Role,
-                organasasi: newUser.Organization,
-            }),
-        });
-
-        
-        if (!response.ok) {
-            const errorData = await response.text();
-            throw new Error(`Network response was not ok: ${errorData}`);
-        }
-
-        await fetchOrders();
-        setIsAddUserModalOpen(false);
+      const bodyData = {
+        n_audusr_nm: newUser.Name,
+        c_audusr_role: newUser.Role.toString(), // Pastikan ini adalah string angka
+        i_audusr_email: newUser.Email
+      };
+  
+      console.log('Data yang akan dikirim:', bodyData);
+  
+      const response = await fetch(`${import.meta.env.VITE_HELP_DESK}/Admin/update-karyawan/${newUser.NIK}`, {
+        method: 'PUT',
+        headers: { 
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(bodyData),
+      });
+  
+      // ... rest of the function
     } catch (error) {
-        console.error('Error updating user:', error);
+      console.error('Error memperbarui pengguna:', error);
+      toast.error(`Error memperbarui pengguna: ${error.message}`);
     }
-};
-
+  };
 
 
 const handleEditUser = (user) => {
@@ -158,21 +152,30 @@ const handleEditUser = (user) => {
 };
 
 // Fungsi untuk menghapus user
-const handleDeleteUser = async (id) => {
-  try {
-    const response = await axios.delete(`${import.meta.env.VITE_HELP_DESK}/Admin/delete-karyawan/${id}`);
-    if (response.status === 200) {
-      console.log('User berhasil dihapus');
-      // Update state untuk menghapus user dari daftar
-      setOrders(prevOrders => prevOrders.filter(order => order.id !== id));
-    } else {
-      console.error('Gagal menghapus user:', response.data.message);
+const handleDeleteUser = async (NIK) => {
+  console.log('Attempting to delete user with NIK:', NIK);
+  if (!NIK) {
+    toast.error('NIK karyawan tidak valid');
+    return;
+  }
+
+  if (window.confirm('Apakah Anda yakin ingin menghapus user ini?')) {
+    try {
+      const response = await axios.delete(`${import.meta.env.VITE_HELP_DESK}/Admin/delete-karyawan/${NIK}`);
+      
+      if (response.status === 200) {
+        console.log('User berhasil dihapus:', response.data);
+        setOrders(prevOrders => prevOrders.filter(order => order.NIK !== NIK));
+        toast.success('User berhasil dihapus');
+      } else {
+        throw new Error(response.data.message || 'Gagal menghapus user');
+      }
+    } catch (error) {
+      console.error('Error saat menghapus user:', error);
+      toast.error(`Gagal menghapus user: ${error.response?.data?.message || error.message}`);
     }
-  } catch (error) {
-    console.error('Error saat menghapus user:', error);
   }
 };
-
 
 // Panggil handleDeleteUser dengan ID yang sesuai
   const openKaryawanModal = () => {
@@ -225,8 +228,11 @@ const handleDeleteUser = async (id) => {
                 <td>{order.Organization}</td>
                 <td>{order.Email}</td>
                 <td>
-                  <button onClick={() => handleDeleteUser(order.id)}>Delete</button>
-                  <button onClick={() => handleEditUser(order)}>Edit</button>
+                <button onClick={() => {
+                  console.log('Delete button clicked for NIK:', order.NIK);
+                  handleDeleteUser(order.NIK);
+                }}>Delete</button>
+                  <button onClick={() => handleEditUser(order.NIK)}>Edit</button>
                 </td>
               </tr>
             ))}
