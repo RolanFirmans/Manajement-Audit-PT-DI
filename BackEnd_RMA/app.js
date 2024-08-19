@@ -9,6 +9,10 @@ const auditLogin = require('./Routes/login');
 const auditRoutes = require('./Routes/audit');
 const auditAdmin = require('./Routes/admin');
 
+// SPI
+
+const auditSpi = require('./Routes/spi')
+
 const bodyParser = require('body-parser');
 
 app.use(bodyParser.json());
@@ -21,6 +25,9 @@ app.use(express.json())
 app.use("/Login", auditLogin)
 app.use("/Data", auditRoutes )
 app.use("/Admin", auditAdmin)
+
+// SPI
+app.use("/SPI", auditSpi)
 
 dontenv.config()
 

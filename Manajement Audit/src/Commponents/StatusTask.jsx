@@ -1,15 +1,15 @@
-// import React, { useContext } from "react";
-// import { StatusContext } from "../Commponents/StatusContext";
-// import "./App.css";
+import React, { createContext, useContext, useState } from "react";
 
-// const StatusTask = () => {
-//   const { status, color } = useContext(StatusContext);
+const StatusContext = createContext();
 
-//   return (
-//     <div className="status-card" style={{ backgroundColor: color }}>
-//       <p>{status}</p>
-//     </div>
-//   );
-// };
+export const useStatus = () => useContext(StatusContext);
 
-// export default StatusTask;
+export const StatusProvider = ({ children }) => {
+  const [status, setStatus] = useState(0);
+
+  return (
+    <StatusContext.Provider value={{ status, setStatus }}>
+      {children}
+    </StatusContext.Provider>
+  );
+};
