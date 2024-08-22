@@ -77,6 +77,8 @@ const DataKaryawan = ({ onSelectKaryawan }) => {
           throw new Error('Network response was not ok');
         }
         const result = await response.json();
+
+        
          // Memastikan result.data adalah array
 //         if (Array.isArray(result.data)) {
 //           setDataKaryawan(result.data);

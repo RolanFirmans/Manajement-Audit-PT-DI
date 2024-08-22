@@ -1,65 +1,150 @@
 const pool = require('../utils/dbaudit');
+const ExcelJS = require('exceljs');
+const fs = require('fs');
+const XLSX = require('xlsx');
+const multer = require('multer');
+const path = require('path');
 
 
-
-const createUploadExcel = async (req, res) => {
-  const { readFile, utils } = require('xlsx');
-  const { key, key1, key2, key3, key4} = req.body;
-
-  console.log('Data yang diterima:', { key, key1, key2, key3, key4});
-
-  const file = req.file; // File Excel yang diupload
-  const client = await pool.connect();
-
-  try {
-    
-    await client.query('BEGIN');
-
-    // Baca file Excel
-    const workbook = readFile(file.path);
-    const sheetName = workbook.SheetNames[0];
-    const worksheet = workbook.Sheets[sheetName];
-
-    // Convert sheet ke dalam JSON
-    const jsonData = utils.sheet_to_json(worksheet);
-
-    // Tanggal saat ini
-    const currentDate = new Date();
-
-    // Simpan data ke dalam tabel
-    for (let row of jsonData) {
-      const {
-        N_AUDEVD_TITLE,
-        N_AUDEVD_PHS,
-        C_AUDEVD_STAT,
-        D_AUDEVD_DDL,
-        N_AUDEVD_AUDR
-      } = row; // Sesuaikan dengan kolom yang ada di Excel
-
-      await client.query(
-        `
-          INSERT INTO TMAUDVD
-          (N_AUDEVD_TITLE, N_AUDEVD_PHS, C_AUDEVD_STAT, D_AUDEVD_DDL, N_AUDEVD_AUDR)
-          VALUES ($1, $2, $3, $4, $5)
-        `,
-        [N_AUDEVD_TITLE, N_AUDEVD_PHS, C_AUDEVD_STAT, D_AUDEVD_DDL || currentDate, N_AUDEVD_AUDR]
-      );
+// Konfigurasi penyimpanan file
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        // Menyesuaikan path ke folder uploads
+        cb(null, path.join(__dirname, '../../uploads')); // Pastikan path sesuai dengan struktur proyek Anda
+    },
+    filename: (req, file, cb) => {
+        cb(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname));
     }
+});
 
-    await client.query('COMMIT');
-    res.status(200).json({ message: 'Data berhasil ditambahkan' });
+const upload = multer({ storage: storage });
 
-    res.json({palyload: result.rows });
+const importExcelToDB = async (req, res) => {
+  try {
+      // Path ke file Excel
+      const filePath = path.join(__dirname, '..', 'uploads', 'SPI.xlsx');
+  
+      // Membaca file Excel
+      const workbook = XLSX.readFile(filePath);
+      const sheetName = workbook.SheetNames[0];
+      const sheetData = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName]);
+  
+      // Menampilkan data dari file Excel
+      res.json(sheetData);
+    } catch (error) {
+      console.error('Error reading Excel file:', error);
+      res.status(500).send('Internal Server Error');
+    }
+};
+
+
+const saveDataExcel = async (req, res) => {
+  try {
+    // Path ke file Excel
+    const filePath = path.join(__dirname, '..', 'uploads', 'SPI.xlsx');
+      
+    // Membaca file Excel
+    const workbook = XLSX.readFile(filePath);
+    const sheetName = workbook.SheetNames[0];
+    const sheetData = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName]);
+
+    // Mengambil jumlah data yang sudah ada di tabel TMAUDEVD
+    const result = await pool.query('SELECT COUNT(*) FROM TMAUDEVD');
+    let counter = parseInt(result.rows[0].count) + 1; // Mengatur counter agar dimulai dari jumlah data yang ada + 1
+
+    // Loop melalui setiap baris dan simpan ke PostgreSQL
+    for (const row of sheetData) {
+      // Mengakses nilai dari row sesuai dengan nama kolom di Excel
+      const values = [
+        counter++,  // I_AUDEVD selalu diincrement dari nilai awal counter
+        row['Data & Document Needed'],  // N_AUDEVD_TITLE
+        row['Phase'],                   // N_AUDEVD_PHS
+        row['Status'],                  // C_AUDEVD_STAT
+        row['Deadline'] || new Date(),  // D_AUDEVD_DDL, Gunakan tanggal saat ini jika D_AUDEVD_DDL kosong
+        row['Remarks by Auditor'],  // N_AUDEVD_AUDR
+        row['Auditee'],         // I_AUDEVD_AUD
+        row['Auditor'],          // C_AUDEVD_AUDR
+        row['Status']           // C_AUDEVD_STATCMPL (Menggunakan Status dua kali, ini mungkin perlu diperiksa apakah itu sesuai dengan kebutuhan)
+      ];
+
+      // Query SQL dengan jumlah kolom dan nilai yang sesuai
+      const query = `
+        INSERT INTO TMAUDEVD
+        (I_AUDEVD, N_AUDEVD_TITLE, N_AUDEVD_PHS, C_AUDEVD_STAT, D_AUDEVD_DDL, N_AUDEVD_AUDR, I_AUDEVD_AUD, C_AUDEVD_AUDR, C_AUDEVD_STATCMPL)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+      `;
+      
+      // Menjalankan query dengan nilai yang sudah ditentukan
+      await pool.query(query, values);
+    }
+    
+    res.send('Data has been saved to PostgreSQL');
   } catch (error) {
-    await client.query('ROLLBACK');
-    console.error('Error saat menyimpan data:', error);
-    res.status(400).json({ error: 'Terjadi kesalahan saat menyimpan data', details: error.message });
-  } finally {
-    client.release();
+    console.error('Error saving data to PostgreSQL:', error);
+    res.status(500).send('Internal Server Error');
   }
 };
 
+
+const DownloadFileExcel = async (req, res) => {
+  const workbook = new ExcelJS.Workbook();
+  const worksheet = workbook.addWorksheet('Data');
+
+    // Tambahkan header
+  worksheet.columns = [
+      { header: 'Data & Document Needed', key: 'ddn', width: 25 },
+      { header: 'Phase',                  key: 'phase', width: 25 },
+      { header: 'Status',                 key: 'status', width: 10 },
+      { header: 'Deadline',               key: 'dl', width: 10 },
+      { header: 'Reamarks by Auditor',    key: 'rba', width: 25 },
+      { header: 'Auditor',                key: 'aud', width: 10 },
+  ];
+
+    // Tambahkan data
+  //   worksheet.addRows([
+  //     { ddn: 'Document B', phase: 'Phase 2', status: 'In Progress', dl: '2024-08-30', rba: 'Pending review', aud: 'Auditor 2' },
+  //     { ddn: 'Document C', phase: 'Phase 3', status: 'Not Started', dl: '2024-09-10', rba: 'To be reviewed', aud: 'Auditor 3' }
+  // ]);
+  
+
+    // Tentukan path untuk menyimpan file Excel
+    const filePath = path.join(__dirname, './utils', 'Template.xlsx');
+
+    // Pastikan direktori ada, jika tidak buat
+    if (!fs.existsSync(path.dirname(filePath))) {
+        fs.mkdirSync(path.dirname(filePath), { recursive: true });
+    }
+
+    // Simpan file Excel
+    await workbook.xlsx.writeFile(filePath);
+
+    // Set response headers untuk download file
+    res.setHeader(
+        'Content-Type',
+        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+    );
+    res.setHeader(
+        'Content-Disposition',
+        'attachment; filename=data.xlsx'
+    );
+
+    // Kirim file ke client
+    res.sendFile(filePath, (err) => {
+        if (err) {
+            console.error('Error sending file:', err);
+            res.status(500).send('Error downloading file');
+        } else {
+            console.log('File sent successfully');
+        }
+    });
+};
+
+
+
 module.exports = {
-  createUploadExcel,
+//   createUploadExcel,
+  importExcelToDB,
+  saveDataExcel,
+  DownloadFileExcel,
 }
 

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import "../App.css";
 import axios from "axios";
+import "../App.css";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
@@ -9,7 +9,6 @@ const UploadFileExcelSpi = () => {
   const [uploadProgress, setUploadProgress] = useState(0);
   const [message, setMessage] = useState("");
   const [showMessage, setShowMessage] = useState(false);
-  const [uploadDate, setUploadDate] = useState("");
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [dragOver, setDragOver] = useState(false);
 
@@ -18,12 +17,8 @@ const UploadFileExcelSpi = () => {
   };
 
   const hasExtension = (fileName, exts) => {
-    return new RegExp(`(${exts.join("|").replace(/\./g, "\\.")})$`).test(
-      fileName
-    );
+    return new RegExp(`(${exts.join("|").replace(/\./g, "\\.")})$`).test(fileName);
   };
-
-
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -33,11 +28,11 @@ const UploadFileExcelSpi = () => {
     }
 
     const formData = new FormData();
-    formData.append("filepelamar", file);
+    formData.append("file", file); 
 
     try {
       const response = await axios.post(
-        "exec-import-excel-stock.php",
+        `${import.meta.env.VITE_HELP_DESK}/SPI/upload-file-excel-spi`,
         formData,
         {
           headers: {
@@ -55,16 +50,15 @@ const UploadFileExcelSpi = () => {
       setMessage(
         <span>
           <i className="fa fa-check"></i>{" "}
-          <font color="green">{response.data}</font>
+          <font color="green">{response.data.message}</font>
         </span>
       );
       setShowMessage(true);
-      setUploadDate(new Date().toLocaleDateString());
       setTimeout(() => setShowMessage(false), 3000);
       setFile(null);
       setUploadProgress(0);
     } catch (error) {
-      setMessage(<font color="red">ERROR: unable to upload files</font>);
+      setMessage(<font color="red">ERROR: {error.response?.data.error || 'unable to upload files'}</font>);
       setShowMessage(true);
     }
   };
@@ -111,7 +105,7 @@ const UploadFileExcelSpi = () => {
         <fieldset className="label_side" id="facnumber">
           <label>Template File Excel</label>
           <div className="clearfix">
-            <a className="btn btn-success" href="template/templatestock.xls">
+            <a className="btn btn-success" href="http://localhost:3100/SPI/TemplateFileExcel">
               Download Template
             </a>
           </div>
@@ -133,17 +127,14 @@ const UploadFileExcelSpi = () => {
             <div className="input-group margin" style={{ width: "50%" }}>
               <input
                 type="file"
-                name="filepelamar"
-                id="filepelamar"
+                name="file"
+                id="file"
                 className="form-control"
                 onChange={handleFileChange}
                 style={{ display: "none" }}
-                ref={(input) =>
-                  input && input.files.length && setFile(input.files[0])
-                }
               />
               <div
-                onClick={() => document.getElementById("filepelamar").click()}
+                onClick={() => document.getElementById("file").click()}
                 style={{
                   cursor: "pointer",
                   padding: "10px",
