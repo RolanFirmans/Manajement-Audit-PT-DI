@@ -2,10 +2,8 @@ const pool = require('../utils/dbaudit');
 
 module.exports = (req, res) => {
     pool.query(
-        
-      SELECT * 
             `
-            FROM karyawan 
+           SELECT * FROM karyawan 
             
             `,
               

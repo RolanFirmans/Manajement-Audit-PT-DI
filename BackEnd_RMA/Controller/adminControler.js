@@ -100,11 +100,11 @@ const deleteKaryawan = async (req, res) => {
 // Endpoint PUT untuk UPDATE data masih error 
 const updateKaryawan = async (req, res) => {
   const { key1 } = req.params; // N_AUDUSR_USRNM
-  const { c_audusr_role, n_audusr_nm, i_audusr_email } = req.body;
+  const { c_audusr_role, n_audusr_nm, i_audusr_email, c_audusr_audr } = req.body;
 
-  console.log('Data yang diterima untuk update:', { key1, c_audusr_role, n_audusr_nm, i_audusr_email });
+  console.log('Data yang diterima untuk update:', { key1, c_audusr_role, n_audusr_nm, i_audusr_email, c_audusr_audr });
 
-  // Pengecekan data yang diperlukan
+  // Validasi field yang kosong
   if (!key1 || !c_audusr_role || !n_audusr_nm || !i_audusr_email) {
     return res.status(400).json({ error: 'Semua field harus diisi' });
   }
@@ -114,36 +114,63 @@ const updateKaryawan = async (req, res) => {
   try {
     await client.query('BEGIN');
 
+    // Konversi role menjadi integer
     const roleInt = parseInt(c_audusr_role, 10);
 
-    if (isNaN(roleInt) || roleInt < 0 || roleInt > 4) {
+    // Validasi role jika nilainya tidak sesuai
+    if (isNaN(roleInt) || roleInt < 0 || roleInt > 5) {
       throw new Error(`Role tidak valid: ${c_audusr_role}`);
     }
 
-    const updateQuery = `
-      UPDATE TMAUDUSR 
-      SET N_AUDUSR_NM = $1,
-          C_AUDUSR_ROLE = $2,
-          I_AUDUSR_EMAIL = $3
-      WHERE N_AUDUSR_USRNM = $4
-    `;
+    let updateQuery, queryParams;
 
-    const result = await client.query(updateQuery, [n_audusr_nm, roleInt, i_audusr_email, key1]);
+    // Logika untuk update berdasarkan role
+    if (roleInt <= 3) {
+      // Jika role <= 3, ambil data dari tabel `karyawan`
+      updateQuery = `
+        UPDATE TMAUDUSR SET 
+          N_AUDUSR_NM = (SELECT nama FROM karywan WHERE nik = $1),
+          C_AUDUSR_ROLE = $2,
+          C_AUDUSR_AUDR = (SELECT organisasi FROM karywan WHERE nik = $1),
+          I_AUDUSR_EMAIL = $3
+        WHERE N_AUDUSR_USRNM = $1
+      `;
+      queryParams = [key1, roleInt, i_audusr_email];
+    } else {
+      // Jika role > 3, update langsung dari input
+      updateQuery = `
+        UPDATE TMAUDUSR SET 
+          N_AUDUSR_NM = $1,
+          C_AUDUSR_ROLE = $2,
+          C_AUDUSR_AUDR = $3,
+          I_AUDUSR_EMAIL = $4
+        WHERE N_AUDUSR_USRNM = $5
+      `;
+      queryParams = [n_audusr_nm, roleInt, c_audusr_audr, i_audusr_email, key1];
+    }
+
+    // Eksekusi query
+    const result = await client.query(updateQuery, queryParams);
 
     if (result.rowCount === 0) {
       throw new Error('Pengguna tidak ditemukan');
     }
 
+    // Commit transaksi jika berhasil
     await client.query('COMMIT');
     res.json({ message: 'Data pengguna berhasil diperbarui' });
   } catch (err) {
+    // Rollback jika terjadi error
     await client.query('ROLLBACK');
     console.error('Error in updateKaryawan:', err);
-    res.status(400).json({ error: err.message });
+    res.status(500).json({ error: err.message });
   } finally {
+    // Pastikan koneksi ke database ditutup
     client.release();
   }
 };
+
+
 module.exports = {
     createDataKaryawan,
     getKaryawan,

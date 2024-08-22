@@ -10,8 +10,10 @@ const auditRoutes = require('./Routes/audit');
 const auditAdmin = require('./Routes/admin');
 
 // SPI
-
 const auditSpi = require('./Routes/spi')
+
+// ADMIN AUDIT IT
+const auditIt = require('./Routes/adminAuditIT');
 
 const bodyParser = require('body-parser');
 
@@ -29,6 +31,8 @@ app.use("/Admin", auditAdmin)
 // SPI
 app.use("/SPI", auditSpi)
 
+// ADMIN AUDIT IT
+app.use("/AuditIT", auditIt)
 dontenv.config()
 
 
