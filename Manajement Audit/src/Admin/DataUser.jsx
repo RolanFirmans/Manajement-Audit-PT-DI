@@ -122,14 +122,21 @@ const DataUser = () => {
   
   const handleUpdateUser = async () => {
     try {
+      const roleValue = getRoleValue(newUser.Role);
+      
+      if (roleValue === null) {
+        throw new Error('Peran yang dipilih tidak valid');
+      }
+
       const bodyData = {
+        key1: newUser.NIK,
+        c_audusr_role: roleValue.toString(),
         n_audusr_nm: newUser.Name,
-        c_audusr_role: newUser.Role.toString(), // Pastikan ini adalah string angka
-        i_audusr_email: newUser.Email
+        i_audusr_email: newUser.Email,
       };
-  
+
       console.log('Data yang akan dikirim:', bodyData);
-  
+
       const response = await fetch(`${import.meta.env.VITE_HELP_DESK}/Admin/update-karyawan/${newUser.NIK}`, {
         method: 'PUT',
         headers: { 
@@ -137,19 +144,45 @@ const DataUser = () => {
         },
         body: JSON.stringify(bodyData),
       });
-  
-      // ... rest of the function
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Terjadi kesalahan saat memperbarui pengguna');
+      }
+
+      const result = await response.json();
+      console.log('Hasil update:', result);
+
+      toast.success('Pengguna berhasil diperbarui');
+      setIsAddUserModalOpen(false);
+      setNewUser({ No: '', NIK: '', Name: '', Role: '', Organization: '', Email: '' }); // Reset newUser
+      fetchKaryawan(); // Refresh daftar karyawan setelah update
+      setIsEditing(false); // Reset flag isEditing setelah update
+
     } catch (error) {
       console.error('Error memperbarui pengguna:', error);
       toast.error(`Error memperbarui pengguna: ${error.message}`);
     }
   };
+  const handleSaveUser = () => {
+    if (isEditing) {
+      handleUpdateUser();
+    } else {
+      handleAddUser();
+    }
+  };
 
-
-const handleEditUser = (user) => {
-    setNewUser(user);
+  const handleEditUser = (user) => {
+    console.log("Edit user data:", user); // Untuk debugging
+    setNewUser({
+      NIK: user.NIK,
+      Name: user.Name,
+      Role: user.Role,
+      Email: user.Email,
+      Organization: user.Organization
+    });
     setIsAddUserModalOpen(true);
-};
+  };
 
 // Fungsi untuk menghapus user
 const handleDeleteUser = async (NIK) => {
@@ -232,7 +265,7 @@ const handleDeleteUser = async (NIK) => {
                   console.log('Delete button clicked for NIK:', order.NIK);
                   handleDeleteUser(order.NIK);
                 }}>Delete</button>
-                  <button onClick={() => handleEditUser(order.NIK)}>Edit</button>
+                  <button onClick={() => handleEditUser(order)}>Edit</button>
                 </td>
               </tr>
             ))}
@@ -247,7 +280,7 @@ const handleDeleteUser = async (NIK) => {
         className="user-modal"
         overlayClassName="user-modal-overlay"
       >
-        <h3>{newUser.No ? 'Edit' : 'Add'} Data User</h3>
+        <h3>{newUser.NIK ? 'Edit' : 'Add'} Data User</h3>
         <div className="modal-content">
           <label>NIK</label>
           <input
@@ -300,7 +333,7 @@ const handleDeleteUser = async (NIK) => {
         <div className="modal-actions">
           <button onClick={() => setIsAddUserModalOpen(false)} className="modal-cancel">Cancel</button>
           <button onClick={newUser.No ? handleUpdateUser : handleAddUser} className="modal-add">
-            {newUser.No ? 'Update' : 'Add'}
+            {newUser.NIK ? 'Update' : 'Add'}
           </button>
         </div>
       </Modal>
