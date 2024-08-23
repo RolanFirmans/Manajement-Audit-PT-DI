@@ -6,18 +6,40 @@ const multer = require('multer');
 const path = require('path');
 
 
-// Konfigurasi penyimpanan file
+// Fungsi untuk memformat tanggal
+const formatDate = (dateString) => {
+  const date = new Date(dateString);
+  return isNaN(date.getTime()) ? null : date.toISOString().split('T')[0];
+};
+
+// Membuat folder 'uploads' jika belum ada
+const uploadDir = path.join(__dirname, '../../uploads');
+if (!fs.existsSync(uploadDir)) {
+    fs.mkdirSync(uploadDir, { recursive: true });
+}
+
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-        // Menyesuaikan path ke folder uploads
-        cb(null, path.join(__dirname, '../../uploads')); // Pastikan path sesuai dengan struktur proyek Anda
+        cb(null, uploadDir);
     },
     filename: (req, file, cb) => {
         cb(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname));
     }
 });
 
-const upload = multer({ storage: storage });
+const upload = multer({ storage: storage }).single('file');
+
+const uploadExcel = async (req, res) => {
+  try {
+      console.log(req.file); // Harusnya menampilkan informasi file
+
+      res.send('File berhasil di-upload');
+  } catch (error) {
+      console.error(error);
+      res.status(500).send('Terjadi kesalahan saat meng-upload file');
+  }
+}
+
 
 const importExcelToDB = async (req, res) => {
   try {
@@ -32,8 +54,8 @@ const importExcelToDB = async (req, res) => {
       // Menampilkan data dari file Excel
       res.json(sheetData);
     } catch (error) {
-      console.error('Error reading Excel file:', error);
-      res.status(500).send('Internal Server Error');
+      console.error('Error Membaca File Excel:', error);
+      res.status(500).send('Terjadi Kesalahan');
     }
 };
 
@@ -52,6 +74,9 @@ const saveDataExcel = async (req, res) => {
     const result = await pool.query('SELECT COUNT(*) FROM TMAUDEVD');
     let counter = parseInt(result.rows[0].count) + 1; // Mengatur counter agar dimulai dari jumlah data yang ada + 1
 
+    // Mendapatkan tanggal dan waktu saat ini dalam format ISO
+    const formattedYear = new Date().toISOString();  // Format lengkap tanggal dan waktu UTC
+
     // Loop melalui setiap baris dan simpan ke PostgreSQL
     for (const row of sheetData) {
       // Mengakses nilai dari row sesuai dengan nama kolom di Excel
@@ -60,18 +85,19 @@ const saveDataExcel = async (req, res) => {
         row['Data & Document Needed'],  // N_AUDEVD_TITLE
         row['Phase'],                   // N_AUDEVD_PHS
         row['Status'],                  // C_AUDEVD_STAT
-        row['Deadline'] || new Date(),  // D_AUDEVD_DDL, Gunakan tanggal saat ini jika D_AUDEVD_DDL kosong
+        row['Deadline'],  // D_AUDEVD_DDL, Gunakan tanggal saat ini jika D_AUDEVD_DDL kosong
         row['Remarks by Auditor'],  // N_AUDEVD_AUDR
         row['Auditee'],         // I_AUDEVD_AUD
         row['Auditor'],          // C_AUDEVD_AUDR
-        row['Status']           // C_AUDEVD_STATCMPL (Menggunakan Status dua kali, ini mungkin perlu diperiksa apakah itu sesuai dengan kebutuhan)
+        row['Status'],           // C_AUDEVD_STATCMPL (Menggunakan Status dua kali, ini mungkin perlu diperiksa apakah itu sesuai dengan kebutuhan)
+        formattedYear,           // Menggunakan formattedYear untuk C_AUDEVD_YR
       ];
 
       // Query SQL dengan jumlah kolom dan nilai yang sesuai
       const query = `
         INSERT INTO TMAUDEVD
-        (I_AUDEVD, N_AUDEVD_TITLE, N_AUDEVD_PHS, C_AUDEVD_STAT, D_AUDEVD_DDL, N_AUDEVD_AUDR, I_AUDEVD_AUD, C_AUDEVD_AUDR, C_AUDEVD_STATCMPL)
-        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+        (I_AUDEVD, N_AUDEVD_TITLE, N_AUDEVD_PHS, C_AUDEVD_STAT, D_AUDEVD_DDL, N_AUDEVD_AUDR, I_AUDEVD_AUD, C_AUDEVD_AUDR, C_AUDEVD_STATCMPL, C_AUDEVD_YR)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
       `;
       
       // Menjalankan query dengan nilai yang sudah ditentukan
@@ -143,6 +169,7 @@ const DownloadFileExcel = async (req, res) => {
 
 module.exports = {
 //   createUploadExcel,
+  uploadExcel,
   importExcelToDB,
   saveDataExcel,
   DownloadFileExcel,

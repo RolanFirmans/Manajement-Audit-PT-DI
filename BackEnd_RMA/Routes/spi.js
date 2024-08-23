@@ -5,6 +5,7 @@ const { createUploadExcel } = require('../Controller/spiControler');
 const { DownloadFileExcel } = require('../Controller/spiControler');
 const { importExcelToDB } = require('../Controller/spiControler');
 const { saveDataExcel } = require('../Controller/spiControler');
+const { uploadExcel } = require('../Controller/spiControler');
 
 
 
@@ -31,6 +32,8 @@ router.get('/import-excel-db', importExcelToDB);
 // Definisikan route untuk upload file excel spi
 // router.post('/upload-file-excel-spi', createUploadExcel);
 router.post('/save-data-excel', saveDataExcel);
+router.post('/upload-file-excel', uploadExcel);
+
 
 
 // DELETE
