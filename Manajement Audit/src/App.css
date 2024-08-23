@@ -4,6 +4,8 @@
   box-sizing: border-box;
 }
 
+
+
 /* START STYLE NAVBAR */
 .navbar {
   justify-content: space-between;
@@ -659,8 +661,10 @@ button {
 
 /* START ADMIN AUDIT IT  */
 
+
 .contentAAIS-wrapper {
   display: flex;
+  
 }
 .sideAAIS-nav {
   width: 200px;
