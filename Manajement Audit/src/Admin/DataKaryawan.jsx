@@ -72,6 +72,7 @@ const DataKaryawan = ({ onSelectKaryawan }) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
+        // const response = await fetch(apiurl);
         const response = await fetch(`${import.meta.env.VITE_API_URL_TEST}`);
         if (!response.ok) {
           throw new Error('Network response was not ok');
