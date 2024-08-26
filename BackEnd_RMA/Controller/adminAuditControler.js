@@ -11,6 +11,7 @@ const GetDataEvidence = async (req, res) => {
       const result = await pool.query(
         'SELECT * FROM TMAUDEVD WHERE EXTRACT(YEAR FROM C_AUDEVD_YR) = $1', [currentYear]
       );
+      console.log('Query berhasil dijalankan', result.rows);
       
       // Menggunakan fungsi response yang sudah didefinisikan sebelumnya
       response(200, result.rows, 'Data ditemukan', res);
@@ -25,14 +26,10 @@ const GetDataEvidence = async (req, res) => {
 const GetAuditee = async (req, res) => {
   try {
     const result = await pool.query(`
-      SELECT
-        A.N_AUDUSR_USRNM AS nik,
-        A.N_AUDUSR_NM AS nama,
-        B.organisasi
-      FROM TMAUDUSR A
-      JOIN karyawan B
-      ON A.N_AUDUSR_USRNM = B.nik
-      WHERE A.C_AUDUSR_ROLE = 3
+      SELECT t.n_audusr_usrnm, t.n_audusr_nm, t.c_audusr_role, e.organisasi
+      FROM TMAUDUSR t
+      JOIN karyawan e ON t.n_audusr_usrnm = e.nik
+
     `);
 
     // Mengirimkan data Auditee dengan struktur JSON yang lebih baik
